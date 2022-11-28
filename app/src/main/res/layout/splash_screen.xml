@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/splash_screen_frame"
+    android:layout_width="fill_parent"
+    android:background="#e8fcf7"
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:weightSum="2"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/LL_center"
+            android:gravity="bottom"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="0dp"
+            android:layout_marginBottom="40dp">
+            <TextView
+                android:id="@+id/linesales_management"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:padding="1dp"
+                android:textSize="21dp"
+                android:gravity="center"
+                android:layout_gravity="top"
+                android:textColor="#414445"
+                android:fontFamily="@string/font_family_medium"
+                android:text="MSR Clinic Management"
+                android:textStyle="bold"
+                android:visibility="visible">
+            </TextView>
+
+            <TextView
+                android:id="@+id/linesales_management"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:textSize="28dp"
+                android:gravity="center"
+                android:layout_gravity="top"
+                android:textColor="#414445"
+                android:fontFamily="@string/font_family_medium"
+                android:text="Appointment Booking"
+                android:textStyle="bold"
+                android:visibility="visible">
+            </TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/shine_layout"
+            android:gravity="bottom"
+            android:layout_below="@id/LL_center"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="0dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/linesales_management"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:padding="1dp"
+                android:textSize="25dp"
+                android:gravity="center"
+                android:layout_gravity="top"
+                android:textColor="#414445"
+                android:fontFamily="@string/font_family_medium"
+                android:text="  Powered By "
+                android:textStyle="bold"
+                android:visibility="visible">
+            </TextView>
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:id="@+id/natarajan_logo"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="35dp"
+                    android:background="@drawable/trio_s_logo_final"
+                    tools:ignore="MissingConstraints">
+                </ImageView>
+
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

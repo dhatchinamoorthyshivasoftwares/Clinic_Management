@@ -13,4 +13,32 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="LoginTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">@color/login_panel_bg</item>
+        <item name="colorPrimaryDark">@color/login_panel_bg</item>
+        <item name="colorAccent">@color/login_panel_bg</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/login_panel_bg</item>
+        <item name="colorSecondaryVariant">@color/login_panel_bg</item>
+        <item name="colorOnSecondary">@color/login_panel_bg</item>
+    </style>
+
+    <style name="MainTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#38b5a2</item>
+        <item name="colorPrimaryDark">#38b5a2</item>
+        <item name="colorAccent">#38b5a2</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#38b5a2</item>
+        <item name="colorSecondaryVariant">#38b5a2</item>
+        <item name="colorOnSecondary">#38b5a2</item>
+    </style>
+
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">#38b5a2</item>
+        <item name="colorPrimaryVariant">#38b5a2</item>
+        <item name="android:titleTextColor" tools:targetApi="m">@color/teal_700</item>
+    </style>
 </resources>
