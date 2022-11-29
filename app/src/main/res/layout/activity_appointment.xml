@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#f5fafa"
         android:orientation="vertical">
 
@@ -99,14 +99,99 @@
             </LinearLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txtView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:padding="1dp"
+                android:text="Search by"
+                android:textColor="@color/common_txt_color"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/rdGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtView"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rdb_name_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="80dp"
+                    android:buttonTint="@color/tot_customer"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:padding="1dp"
+                    android:text="Name or ID"
+                    android:textColor="@color/common_txt_color"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/rdb_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:buttonTint="@color/tot_customer"
+                    android:onClick="onRadioButtonClicked"
+                    android:padding="1dp"
+                    android:text="Visit Date"
+                    android:textColor="@color/common_txt_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </RadioGroup>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/LL_date"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="0dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="0dp"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/from_to_date_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="@drawable/date_bg"
+                android:fontFamily="sans-serif-condensed-light"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="01-11-2022 to 30-11-2022 "
+                android:textColor="@color/white"
+                android:textSize="19sp"
+                android:textStyle="bold"
+                tools:ignore="NestedWeights" />
+
+        </LinearLayout>
+
         <androidx.cardview.widget.CardView
-            android:id="@+id/collection_cv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="0dp"
+            android:visibility="visible"
             app:cardBackgroundColor="#f2fcfc"
             app:cardCornerRadius="10dp"
             app:cardElevation="6dp"
@@ -121,101 +206,132 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="0dp"
-                android:weightSum="0">
+                android:visibility="visible">
 
                 <LinearLayout
+                    android:id="@+id/search_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginLeft="0dp"
                     android:layout_marginTop="0dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginRight="0dp"
-                    android:layout_marginBottom="0dp"
-                    android:background="@drawable/search_background"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="5dp"
-                    android:visibility="visible"
-                    android:weightSum="2">
+                    android:orientation="vertical"
+                    android:padding="0dp"
+                    android:weightSum="0">
 
-                    <EditText
-                        android:id="@+id/main_search_edittext"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginLeft="0dp"
                         android:layout_marginTop="0dp"
                         android:layout_marginEnd="0dp"
                         android:layout_marginRight="0dp"
                         android:layout_marginBottom="0dp"
-                        android:layout_weight="1.40"
-                        android:background="@color/transparent"
-                        android:digits="0123456789qwertzuiopasdfghjklyxcvbnm"
-                        android:gravity="left|center_vertical"
-                        android:hint="Search by patient name or id"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:padding="0dp"
-                        android:singleLine="true"
-                        android:textColor="#222c36"
-                        android:textColorHint="@color/gray"
-                        android:textSize="18dp"
-                        android:textStyle="normal"
-                        android:visibility="visible">
-
-                    </EditText>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.60"
                         android:background="@drawable/search_background"
-                        android:gravity="end"
+                        android:gravity="center"
                         android:orientation="horizontal"
-                        android:padding="0dp"
-                        android:visibility="visible">
+                        android:padding="5dp"
+                        android:visibility="visible"
+                        android:weightSum="2">
 
-                        <ImageView
-                            android:id="@+id/search_clear"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginTop="2dp"
+                        <EditText
+                            android:id="@+id/search_edittext"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="0dp"
                             android:layout_marginEnd="0dp"
                             android:layout_marginRight="0dp"
-                            android:layout_weight="0"
-                            android:background="@drawable/search_clear"
-                            android:gravity="center"
+                            android:layout_marginBottom="0dp"
+                            android:layout_weight="1.40"
+                            android:background="@color/transparent"
+                            android:digits="0123456789qwertzuiopasdfghjklyxcvbnm"
+                            android:gravity="left|center_vertical"
+                            android:hint="Search by patient Name or UHID"
+                            android:inputType="text"
+                            android:maxLines="1"
                             android:padding="0dp"
-                            android:visibility="gone" />
+                            android:singleLine="true"
+                            android:textColor="#222c36"
+                            android:textColorHint="@color/gray"
+                            android:textSize="18dp"
+                            android:textStyle="normal"
+                            android:visibility="visible">
 
-                        <ImageView
-                            android:id="@+id/search_enter"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginEnd="0dp"
-                            android:layout_marginRight="0dp"
-                            android:layout_marginBottom="2dp"
-                            android:layout_weight="0"
-                            android:background="@drawable/ic_baseline_search_24"
+                        </EditText>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.60"
+                            android:background="@drawable/search_background"
                             android:gravity="end"
+                            android:orientation="horizontal"
                             android:padding="0dp"
-                            android:visibility="visible" />
+                            android:visibility="visible">
+
+                            <ImageView
+                                android:id="@+id/search_clear"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginEnd="0dp"
+                                android:layout_marginRight="0dp"
+                                android:layout_weight="0"
+                                android:background="@drawable/search_clear"
+                                android:gravity="center"
+                                android:padding="0dp"
+                                android:visibility="gone" />
+
+                            <ImageView
+                                android:id="@+id/search_enter"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginEnd="0dp"
+                                android:layout_marginRight="0dp"
+                                android:layout_marginBottom="2dp"
+                                android:layout_weight="0"
+                                android:background="@drawable/ic_baseline_search_24"
+                                android:gravity="end"
+                                android:padding="0dp"
+                                android:visibility="visible" />
+                        </LinearLayout>
                     </LinearLayout>
+
                 </LinearLayout>
 
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/LL_search_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="0dp"
+                    android:visibility="gone"
+                    android:weightSum="0">
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/listview_card"
+                        android:dividerHeight="2dp">
 
+                    </ListView>
+
+                </LinearLayout>
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
+            android:id="@+id/LL_booking_screen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -224,12 +340,13 @@
             android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="horizontal"
+            android:visibility="visible"
             android:weightSum="2">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/collection_cv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
@@ -243,7 +360,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:gravity="top"
                     android:orientation="vertical"
@@ -305,7 +422,6 @@
                             android:visibility="visible">
 
                             <ImageView
-                                android:id="@+id/search_clear"
                                 android:layout_width="45dp"
                                 android:layout_height="45dp"
                                 android:layout_marginStart="0dp"
@@ -320,7 +436,6 @@
                                 android:visibility="gone" />
 
                             <ImageView
-                                android:id="@+id/search_enter"
                                 android:layout_width="45dp"
                                 android:layout_height="45dp"
                                 android:layout_marginStart="0dp"
@@ -360,11 +475,10 @@
                             android:textColor="@color/common_txt_color"
                             android:textSize="16sp"
                             android:textStyle="bold"
-
                             tools:ignore="NestedWeights" />
 
                         <EditText
-                            android:id="@+id/edittext"
+                            android:id="@+id/patient_name_txt"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="0dp"
@@ -415,7 +529,7 @@
                             tools:ignore="NestedWeights" />
 
                         <EditText
-                            android:id="@+id/edittext"
+                            android:id="@+id/patient_id_txt"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="0dp"
@@ -429,7 +543,7 @@
                             android:fontFamily="sans-serif-condensed-light"
                             android:gravity="center_vertical"
                             android:hint=""
-                            android:inputType="text"
+                            android:inputType="number"
                             android:padding="0dp"
                             android:textColor="#222c36"
                             android:textColorHint="@color/gray"
@@ -465,31 +579,43 @@
                             android:textStyle="bold"
                             tools:ignore="NestedWeights" />
 
-                        <EditText
-                            android:id="@+id/edittext"
+                        <RelativeLayout
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginTop="0dp"
-                            android:layout_marginEnd="0dp"
-                            android:layout_marginRight="0dp"
-                            android:layout_marginBottom="0dp"
-                            android:layout_weight="1.2"
-                            android:background="@drawable/inputtext_background"
-                            android:drawableRight="@drawable/ic_keyboard_arrow_down"
-                            android:fontFamily="sans-serif-condensed-light"
-                            android:gravity="center_vertical"
-                            android:hint=""
-                            android:inputType="text"
-                            android:padding="0dp"
-                            android:textColor="#222c36"
-                            android:textColorHint="@color/gray"
-                            android:textSize="16dp"
-                            android:textStyle="normal"
-                            android:visibility="visible">
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.2">
 
-                        </EditText>
+                            <Spinner
+                                android:id="@+id/schedule_time_spin"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@null"
+                                android:spinnerMode="dropdown" />
+
+                            <TextView
+                                android:id="@+id/schedule_time_txt"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginTop="0dp"
+                                android:layout_marginEnd="0dp"
+                                android:layout_marginRight="0dp"
+                                android:layout_marginBottom="0dp"
+                                android:background="@drawable/inputtext_background"
+                                android:drawableRight="@drawable/ic_keyboard_arrow_down"
+                                android:fontFamily="sans-serif-condensed-light"
+                                android:gravity="center_vertical"
+                                android:hint=""
+                                android:inputType="text"
+                                android:padding="0dp"
+                                android:textColor="#222c36"
+                                android:textColorHint="@color/gray"
+                                android:textSize="16dp"
+                                android:textStyle="normal"
+                                android:visibility="visible">
+
+                            </TextView>
+                        </RelativeLayout>
 
                     </LinearLayout>
 
@@ -758,8 +884,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="12dp"
-                        android:layout_marginBottom="12dp"
                         android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="12dp"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="0dp"
@@ -796,9 +922,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="12dp"
-                        android:layout_marginBottom="12dp"
                         android:layout_marginEnd="10dp"
-                        android:gravity="bottom|end"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="end"
                         android:orientation="horizontal"
                         android:padding="0dp"
                         android:weightSum="2">
@@ -819,7 +945,6 @@
                         </TextView>
                     </LinearLayout>
                 </LinearLayout>
-
 
             </androidx.cardview.widget.CardView>
         </LinearLayout>

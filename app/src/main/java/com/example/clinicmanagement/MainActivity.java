@@ -34,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        power_img = (ImageView) findViewById(R.id.power_img);
         date_tv = (TextView) findViewById(R.id.date_tv);
-
         fab_add = (FloatingActionButton) findViewById(R.id.fab_add);
+
+        power_img = (ImageView) findViewById(R.id.power_img);
         power_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 openDatePickerDialog(view);
             }
         });
+
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
