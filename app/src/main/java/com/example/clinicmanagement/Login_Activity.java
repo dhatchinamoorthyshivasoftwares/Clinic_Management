@@ -37,7 +37,7 @@ public class Login_Activity extends AppCompatActivity {
     Context context;
     ImageView btn_back;
     private String codeString = "";
-    public  static  String getdeviceid="";
+    public  static  String getdeviceid="",USER_CODE="",USER_NAME="",ACTIVE_STATUS="",LOGIN_TOKEN="";
     private static final int MAX_LENGHT = 4;
 
     @Override
@@ -263,6 +263,7 @@ public class Login_Activity extends AppCompatActivity {
             }
         });
 
+        CheckDeviceAuthendication();
     }
 
     @SuppressLint("HardwareIds")
@@ -292,7 +293,7 @@ public class Login_Activity extends AppCompatActivity {
             // new Async_Local_DB().execute();
             // Toast.makeText(context,String.valueOf(getdeviceid),Toast.LENGTH_SHORT).show();
             if(isNetworkAvailable()){
-                new AsyncCheck().execute(getdeviceid);
+                new AsyncDeviceCheck().execute(getdeviceid);
             }else{
                 Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
             }
@@ -369,10 +370,82 @@ public class Login_Activity extends AppCompatActivity {
         }
     }
 
+    public class AsyncDeviceCheck extends
+            AsyncTask<String, JSONObject,Boolean> {
+        JSONObject jsonObj, jsonObj_body,jsonObj_userinfo;
+        String message, token;
+        String  success="";
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            //Try Block
+            try {
+                //Make webservice connection and call APi
+
+                RestAPI objRestAPI = new RestAPI();
+                if (isNetworkAvailable()) {
+                    jsonObj = objRestAPI.GetDeviceCheck(getdeviceid);
+                    message = "";
+                    token = "";
+
+
+                       if(jsonObj!=null) {
+                           jsonObj_body = new JSONObject(jsonObj.getString("body"));
+                       }
+
+                       if(jsonObj_body != null) {
+                           success = jsonObj_body.getString("message");
+                           jsonObj_userinfo = new JSONObject(jsonObj_body.getString("UserInfo"));
+
+                       }
+                }
+            }
+            //Catch Block UserAuth true
+            catch (Exception e) {
+                Log.d("AsyncLoggerService", "Message");
+                Log.d("AsyncLoggerService", e.getMessage());
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+            try {
+                if(success.equals("success") || success.equals("unsuccess")) {
+                        USER_CODE = jsonObj_userinfo.getString("user_code");
+                        USER_NAME = jsonObj_userinfo.getString("username");
+
+                }
+                if(success.equals("unsuccess")){
+                    Toast.makeText(context, "Inactive User", Toast.LENGTH_SHORT).show();
+                    ACTIVE_STATUS = "0";
+                }
+                if(success.equals("Invalid device id")){
+                    Toast.makeText(context, "Invalid device id", Toast.LENGTH_SHORT).show();
+                }
+
+            if(!USER_NAME.equals("")){
+                user_name_tv.setText(String.valueOf(USER_NAME));
+               // Toast.makeText(context, "NAME : "+USER_NAME+"  CODE : "+USER_CODE, Toast.LENGTH_SHORT).show();
+                Log.d("LOGIN ACTIVITY ========(DEVICE CHECK)========>", "NAME : "+USER_NAME+"  CODE : "+USER_CODE);
+            }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
     public class AsyncLogin extends
             AsyncTask<String, JSONObject,Boolean> {
-        JSONObject jsonObj,jsonObject_token;
+        JSONObject jsonObj,json_body,json_token;
         int flag;
 
         @Override
@@ -381,12 +454,17 @@ public class Login_Activity extends AppCompatActivity {
             try {
                 //Make webservice connection and call APi
 
-               /* RestAPI objRestAPI = new RestAPI();
-                networkstate = isNetworkAvailable();
-                if (networkstate == true) {
-                    jsonObj = objRestAPI.GetLoginDetails(params[0]);
+                RestAPI objRestAPI = new RestAPI();
 
-                }*/
+                if (isNetworkAvailable()) {
+                    jsonObj = objRestAPI.GetLoginJWT(USER_CODE,USER_NAME,codeString);
+
+                    if(jsonObj != null){
+                       // json_body = new JSONObject(jsonObj.getString("body"));
+                        //json_token = new JSONObject(json_body.getString("token"));
+                        LOGIN_TOKEN = new JSONObject(jsonObj.getString("body")).getString("token");
+                    }
+                }
             }
             //Catch Block UserAuth true
             catch (Exception e) {
@@ -406,11 +484,11 @@ public class Login_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             if(codeString != null) {
-                //Toast.makeText(Login_Activity.this, String.valueOf(codeString), Toast.LENGTH_SHORT).show();
+               // Toast.makeText(Login_Activity.this, String.valueOf(LOGIN_TOKEN), Toast.LENGTH_SHORT).show();
 
                 if(isNetworkAvailable()) {
                     //API Login Validation
-                    if (codeString.length() == MAX_LENGHT) {
+                  /*  if (codeString.length() == MAX_LENGHT) {
 
                         if (codeString.equals("1234") ) {
 
@@ -434,7 +512,9 @@ public class Login_Activity extends AppCompatActivity {
                         toast("Please enter 4 digit PIN");
                         codeString = "";
                         setDotImagesState();
-                    }
+                    }*/
+
+                    new AsyncLoginFinal().execute();
                 }
             }
 
@@ -494,8 +574,76 @@ public class Login_Activity extends AppCompatActivity {
             }*/
 
         }
+    }
 
+    public class AsyncLoginFinal extends
+            AsyncTask<String, JSONObject,Boolean> {
+        JSONObject jsonObj,json_body,jsonObj_userinfo;
+        String  success ="";
 
+        @Override
+        protected Boolean doInBackground(String... params) {
+            //Try Block
+            try {
+                //Make webservice connection and call APi
+
+                RestAPI objRestAPI = new RestAPI();
+
+                if (isNetworkAvailable()) {
+                    jsonObj = objRestAPI.GetLogin(LOGIN_TOKEN);
+
+                    if(jsonObj != null){
+
+                        json_body = new JSONObject(jsonObj.getString("body"));
+                        success =new JSONObject(jsonObj.getString("body")).getString("message");
+
+                        if(success.equals("Login Success")){
+                            USER_CODE =  new JSONObject(jsonObj.getString("UserInfo")).getString("user_code");
+                            USER_NAME =  new JSONObject(jsonObj.getString("UserInfo")).getString("username");
+                        }
+                    }
+                }
+            }
+            //Catch Block UserAuth true
+            catch (Exception e) {
+                Log.d("AsyncLoggerService", "Message");
+                Log.d("AsyncLoggerService", e.getMessage());
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        protected void onPostExecute(Boolean result) {
+
+            if(success.equals("Login Success")) {
+                //Toast.makeText(Login_Activity.this, String.valueOf(codeString), Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(Login_Activity.this, MainActivity.class);
+                Login_Activity.this.finish();
+                startActivity(i);
+                if (codeString.length() > 0) {
+                    codeString = "";
+                    setDotImagesState();
+                }
+            }
+            if(!ACTIVE_STATUS.equals("0")) {
+
+                if (success.equals("unsuccess")) {
+                    Toast.makeText(Login_Activity.this, "Username or password is incorrect", Toast.LENGTH_SHORT).show();
+                    if (codeString.length() > 0) {
+                        codeString = "";
+                        setDotImagesState();
+                    }
+                }
+            }
+
+        }
     }
 
     private void call() {

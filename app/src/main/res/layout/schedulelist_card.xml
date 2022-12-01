@@ -8,11 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
         android:gravity="center"
+        android:background="@drawable/background_ripple"
         android:orientation="horizontal"
-        android:padding="3dp"
+        android:padding="5dp"
         android:weightSum="2">
         <TextView
             android:id="@+id/schedule_tv"
@@ -21,10 +22,10 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif-condensed-light"
             android:gravity="start"
-            android:padding="2dp"
+            android:padding="3dp"
             android:text="-"
             android:textColor="@color/common_txt_color"
-            android:textSize="17sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             tools:ignore="NestedWeights" />
         <TextView
@@ -34,10 +35,10 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif-condensed-light"
             android:gravity="end"
-            android:padding="2dp"
+            android:padding="3dp"
             android:text="-"
             android:textColor="#3a74ab"
-            android:textSize="17sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             tools:ignore="NestedWeights" />
     </LinearLayout>

@@ -7,12 +7,17 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -37,6 +42,10 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.leavjenn.smoothdaterangepicker.date.SmoothDateRangePickerFragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -50,11 +59,11 @@ public class Appointment_Activity extends AppCompatActivity {
     String DATE ="";
     android.icu.util.Calendar calendar;
     SimpleDateFormat mdformat = new SimpleDateFormat("dd-MM-yyyy");
-    TextView date_tv,from_to_date_tv,schedule_time_txt;
-    ImageView  power_img,search_enter,search_clear,close;
+    TextView date_tv,from_to_date_tv,schedule_time_txt,patient_name_txt,patient_id_txt,save_txt;
+    ImageView  power_img,search_enter,search_clear,close,back_btn;
     LinearLayout LL_booking_screen,LL_date,LL_search_list;
-    EditText search_edittext;
-    LinearLayout search_card;
+    EditText search_edittext,doctor_note_txt;
+    LinearLayout search_card,LL_top;
     String[] datestr ;
     String startDateStr,strDate;
     Date monthFirstDay;
@@ -66,11 +75,17 @@ public class Appointment_Activity extends AppCompatActivity {
     Context context;
     ListView list_view,listview_card;
     ScheduleListAdapter scheduleListAdapter;
+    ArrayList<Schedule_Details> schedule_details = new ArrayList<>();
+    private boolean doubleBackToExitPressedOnce;
+    private Handler mHandler;
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment);
 
         context = this;
+        mHandler = new Handler();
         date_tv = (TextView) findViewById(R.id.date_tv);
         power_img = (ImageView) findViewById(R.id.power_img);
 
@@ -82,6 +97,9 @@ public class Appointment_Activity extends AppCompatActivity {
         LL_booking_screen  = (LinearLayout) findViewById(R.id.LL_booking_screen);
         LL_date  = (LinearLayout) findViewById(R.id.LL_date);
         LL_search_list = (LinearLayout) findViewById(R.id.LL_search_list);
+        LL_top = (LinearLayout) findViewById(R.id.LL_top);
+
+        doctor_note_txt = (EditText) findViewById(R.id.doctor_note_txt);
 
         search_edittext = (EditText) findViewById(R.id.search_edittext);
 
@@ -89,13 +107,33 @@ public class Appointment_Activity extends AppCompatActivity {
 
         schedule_time_txt  = (TextView) findViewById(R.id.schedule_time_txt);
 
+        patient_name_txt  = (TextView) findViewById(R.id.patient_name_txt);
+        patient_id_txt  = (TextView) findViewById(R.id.patient_id_txt);
+        save_txt  = (TextView) findViewById(R.id.save_txt);
+
         listview_card = (ListView) findViewById(R.id.listview_card);
+
+        back_btn = (ImageView) findViewById(R.id.back_btn);
 
         schedule_dialog = new Dialog(context);
         schedule_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         schedule_dialog.setContentView(R.layout.schedule_popup);
         list_view = (ListView) schedule_dialog.findViewById(R.id.list_view);
         close = (ImageView) schedule_dialog.findViewById(R.id.close);
+
+       /* doctor_note_txt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                if(LL_top.getVisibility() ==View.VISIBLE){
+                    LL_top.setVisibility(View.GONE);
+                }
+                doubleBackToExitPressedOnce  = false;
+
+                return false;
+            }
+        });*/
+
 
         if(close != null) {
             close.setOnClickListener(new View.OnClickListener() {
@@ -140,21 +178,32 @@ public class Appointment_Activity extends AppCompatActivity {
         schedule_time.add("10:00");schedule_time.add("10:30");
         schedule_time.add("11:00");schedule_time.add("11:30");
         schedule_time.add("12:00");schedule_time.add("12:30");
-        schedule_time.add("13:00");schedule_time.add("13:30");
-        schedule_time.add("14:00");schedule_time.add("14:30");
-        schedule_time.add("15:00");schedule_time.add("15:30");
-        schedule_time.add("16:00");schedule_time.add("16:30");
-        schedule_time.add("17:00");schedule_time.add("17:30");
-        schedule_time.add("18:00");schedule_time.add("18:30");
-        schedule_time.add("19:00");schedule_time.add("19:30");
-        schedule_time.add("20:00");schedule_time.add("20:30");
-        schedule_time.add("21:00");schedule_time.add("21:30");
-        schedule_time.add("22:00");schedule_time.add("22:30");
-        schedule_time.add("23:00");schedule_time.add("23:30");
-        schedule_time.add("24:00");
+        schedule_time.add("01:00");schedule_time.add("01:30");
+        schedule_time.add("02:00");schedule_time.add("02:30");
+        schedule_time.add("03:00");schedule_time.add("03:30");
+        schedule_time.add("04:00");schedule_time.add("04:30");
+        schedule_time.add("05:00");schedule_time.add("05:30");
+        schedule_time.add("06:00");schedule_time.add("06:30");
+        schedule_time.add("07:00");schedule_time.add("07:30");
+        schedule_time.add("08:00");schedule_time.add("08:30");
+        schedule_time.add("09:00");
+        /*schedule_time.add("09:30");
+        schedule_time.add("10:00");schedule_time.add("10:30");
+        schedule_time.add("11:00");schedule_time.add("11:30");
+        schedule_time.add("12:00");*/
 
         // handle select date button which opens the
         // material design date picker
+
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Appointment_Activity.this, MainActivity.class);
+                Appointment_Activity.this.finish();
+                startActivity(i);
+            }
+        });
+
         from_to_date_tv.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -235,15 +284,14 @@ public class Appointment_Activity extends AppCompatActivity {
 
                                             }
                                         });
+
                         smoothDateRangePickerFragment.setMaxDate(calendar1);
                         smoothDateRangePickerFragment.show(getFragmentManager(), "Datepickerdialog");
 
                     }
                 });
 
-        scheduleListAdapter = new ScheduleListAdapter(getApplicationContext(),schedule_time);
-        list_view.setAdapter(scheduleListAdapter);
-        scheduleListAdapter.notifyDataSetChanged();
+
         //listview_card.setAdapter(scheduleListAdapter);
         schedule_time_txt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -356,6 +404,20 @@ public class Appointment_Activity extends AppCompatActivity {
             }
         });
 
+        if (LL_search_list.getVisibility() == View.GONE) {
+            LL_search_list.setVisibility(View.VISIBLE);
+        }
+
+        if(LL_date.getVisibility() == View.VISIBLE){
+            LL_date.setVisibility(View.GONE);
+        }
+        if(search_card.getVisibility() == View.GONE){
+            search_card.setVisibility(View.VISIBLE);
+        }
+        if(LL_booking_screen.getVisibility() ==View.GONE){
+            LL_booking_screen.setVisibility(View.VISIBLE);
+        }
+     new AsyncSchedule().execute();
     }
 
     private void OpenScheduleDialog() {
@@ -363,6 +425,14 @@ public class Appointment_Activity extends AppCompatActivity {
             schedule_dialog.show();
         }
     }
+
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            doubleBackToExitPressedOnce = false;
+        }
+    };
+
 
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
@@ -372,6 +442,9 @@ public class Appointment_Activity extends AppCompatActivity {
             case R.id.rdb_name_id:
                 if(checked)
                     str = "Name ID Selected";
+               /* if(LL_top.getVisibility() == View.GONE){
+                    LL_top.setVisibility(View.VISIBLE);
+                }*/
                 if (LL_search_list.getVisibility() == View.GONE) {
                     LL_search_list.setVisibility(View.VISIBLE);
                 }
@@ -389,6 +462,9 @@ public class Appointment_Activity extends AppCompatActivity {
             case R.id.rdb_date:
                 if(checked)
                     str = "DATE  Selected";
+                /*if(LL_top.getVisibility() == View.GONE){
+                    LL_top.setVisibility(View.VISIBLE);
+                }*/
                 if (LL_search_list.getVisibility() == View.GONE) {
                     LL_search_list.setVisibility(View.VISIBLE);
                 }
@@ -402,6 +478,8 @@ public class Appointment_Activity extends AppCompatActivity {
                 if(LL_booking_screen.getVisibility() ==View.GONE){
                     LL_booking_screen.setVisibility(View.VISIBLE);
                 }
+                break;
+            default:
                 break;
 
         }
@@ -456,12 +534,13 @@ public class Appointment_Activity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+
     public class ScheduleListAdapter extends BaseAdapter {
         LayoutInflater inflater;
         Context context;
-        ArrayList<String> myList;
+        ArrayList<Schedule_Details> myList;
 
-        public ScheduleListAdapter(Context context, ArrayList<String> myList) {
+        public ScheduleListAdapter(Context context, ArrayList<Schedule_Details> myList) {
             this.myList = myList;
             this.context = context;
             inflater = LayoutInflater.from(context);
@@ -473,8 +552,8 @@ public class Appointment_Activity extends AppCompatActivity {
         }
 
         @Override
-        public String getItem(int position) {
-            return (String) myList.get(position);
+        public Schedule_Details getItem(int position) {
+            return (Schedule_Details) myList.get(position);
         }
 
         @Override
@@ -514,17 +593,151 @@ public class Appointment_Activity extends AppCompatActivity {
             } else {
                 mHolder = (ViewHolder) convertView.getTag();
             }
-            mHolder.schedule_tv.setText(String.valueOf(myList.get(position)));
+            mHolder.schedule_tv.setText(String.valueOf(myList.get(position).getSchedule_name()));
+            //convertView.setBackgroundResource(R.drawable.custom_borberless_ripple);
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    schedule_time_txt.setText("");
+                    schedule_time_txt.setText(String.valueOf(myList.get(position).getSchedule_name()));
+                    if(schedule_dialog != null) {
+                        schedule_dialog.dismiss();
+                    }
+                }
+            });
             return convertView;
 
         }
 
     }
+
+    public class AsyncSchedule extends
+            AsyncTask<String, JSONObject,Boolean> {
+        JSONObject jsonObj, jsonObj_body,jsonObj_userinfo;
+        JSONArray jsonArray;
+        String message, token;
+        String  success="";
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            //Try Block
+            try {
+                //Make webservice connection and call APi
+
+                RestAPI objRestAPI = new RestAPI();
+                if (isNetworkAvailable()) {
+                    jsonObj = objRestAPI.GetSchedule("");
+                    message = "";
+                    token = "";
+
+
+                    if(jsonObj!=null) {
+                        jsonObj_body = new JSONObject(jsonObj.getString("body"));
+                    }
+
+                    if(jsonObj_body != null) {
+                        jsonArray = jsonObj_body.getJSONArray("Schedule_Array");
+
+                        if(jsonArray != null){
+                             for(int i=0;i<jsonArray.length();i++){
+                                 JSONObject json = jsonArray.getJSONObject(i);
+                                 schedule_details.add(new Schedule_Details(json.getString("schedule_name"),json.getString("schedule_id"),json.getString("active_status")));
+                             }
+                        }
+                    }
+                }
+            }
+            //Catch Block UserAuth true
+            catch (Exception e) {
+                Log.d("AsyncLoggerService", "Message");
+                Log.d("AsyncLoggerService", e.getMessage());
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+               if(schedule_details != null){
+                   scheduleListAdapter = new ScheduleListAdapter(getApplicationContext(),schedule_details);
+                   list_view.setAdapter(scheduleListAdapter);
+                   scheduleListAdapter.notifyDataSetChanged();
+               }
+
+        }
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     private class ViewHolder {
         TextView schedule_tv,remarks;
         LinearLayout listLL;
         CardView card_view;
-
     }
 
+    @Override
+    public void onBackPressed() {
+
+      //  if(LL_top.getVisibility() ==View.GONE){
+     //       LL_top.setVisibility(View.VISIBLE);
+      //  }
+        Go_Back();
+      //  super.onBackPressed();
+     /*   if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+       // Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        mHandler.postDelayed(mRunnable, 2000);
+        */
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+
+        if (mHandler != null) { mHandler.removeCallbacks(mRunnable); }
+    }
+
+    public void Go_Back() {
+       /* Intent i=new Intent(Appointment_Activity.this,MainActivity.class);
+        Appointment_Activity.this.finish();
+        startActivity(i);
+       */
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
+        builder.setMessage("Are you sure want to go back ?")
+                .setTitle("Clinic")
+              //  .setIcon(R.drawable.ic_launcher_foreground)
+                .setCancelable(false)
+                //.setIcon(R.mipmap.admin)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent i=new Intent(Appointment_Activity.this,MainActivity.class);
+                        Appointment_Activity.this.finish();
+                        startActivity(i);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 }

@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable-v24/ic_keyboard_arrow_down.xml" value="0.2025" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable-v24/search_clear.xml" value="0.2025" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/drawable/background_ripple.xml" value="0.169" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/bg_shine_logo.xml" value="0.1925" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/custom_borberless_ripple.xml" value="0.1925" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/date_bg.xml" value="0.1705" />
@@ -18,15 +19,15 @@
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/search_background.xml" value="0.136" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/time_bg.xml" value="0.156" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/toast_bg.xml" value="0.1925" />
-        <entry key="..\:/Clinic_Management/app/src/main/res/layout/activity_appointment.xml" value="0.25" />
-        <entry key="..\:/Clinic_Management/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/activity_appointment.xml" value="0.33" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/activity_main.xml" value="0.29375" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/check_internet.xml" value="0.184375" />
-        <entry key="..\:/Clinic_Management/app/src/main/res/layout/content_login.xml" value="0.22" />
-        <entry key="..\:/Clinic_Management/app/src/main/res/layout/content_main.xml" value="0.33" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/content_login.xml" value="0.33" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/content_main.xml" value="0.5" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/login_activity.xml" value="0.25" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/schedule_popup.xml" value="0.21" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/schedulelist_card.xml" value="0.25" />
-        <entry key="..\:/Clinic_Management/app/src/main/res/layout/splash_screen.xml" value="0.33" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/splash_screen.xml" value="0.25" />
       </map>
     </option>
   </component>

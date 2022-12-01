@@ -13,7 +13,7 @@
         android:layout_height="75dp"
         android:layout_above="@id/company_name"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="20dp"
         android:src="@drawable/trio_s_logo_final"
         android:visibility="visible" />
 
@@ -39,7 +39,7 @@
         android:id="@+id/linesales_management"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/sub_name"
+        android:layout_above="@id/user_name_tv"
         android:layout_centerInParent="true"
         android:layout_gravity="top"
         android:layout_marginBottom="14dp"
@@ -53,19 +53,6 @@
         android:visibility="visible">
 
     </TextView>
-
-    <TextView
-        android:id="@+id/sub_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/company_name_tv"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="sans-serif"
-        android:text="Admin"
-        android:textColor="#808080"
-        android:textSize="17sp"
-        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/company_name_tv"
@@ -89,7 +76,7 @@
         android:layout_marginBottom="20dp"
         android:fontFamily="sans-serif-condensed"
         android:text=""
-        android:textColor="#3d3d40"
+        android:textColor="@color/tot_customer"
         android:textSize="25sp"
         android:textStyle="normal" />
 

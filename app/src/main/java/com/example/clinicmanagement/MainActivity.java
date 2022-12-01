@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i=new Intent(MainActivity.this,Appointment_Activity.class);
+                MainActivity.this.finish();
                 startActivity(i);
             }
         });
@@ -83,6 +84,28 @@ public class MainActivity extends AppCompatActivity {
                         Intent logout = new Intent(MainActivity.this, Login_Activity.class);
                         MainActivity.this.finish();
                         startActivity(logout);
+                        //.setIcon(R.mipmap.admin)
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void Exit() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
+        builder.setMessage("Are you sure you want to exit ?")
+                .setTitle("Clinic")
+                .setIcon(R.drawable.ic_launcher_foreground)
+                .setCancelable(false)
+                //.setIcon(R.mipmap.admin)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        MainActivity.this.finish();
                         //.setIcon(R.mipmap.admin)
                     }
                 })
@@ -115,5 +138,11 @@ public class MainActivity extends AppCompatActivity {
         // datePickerDialog.getDatePicker().setMinDate(cal1.getTimeInMillis());
         // datePickerDialog.getDatePicker().setMaxDate(cal.getTimeInMillis());
         datePickerDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+      //  super.onBackPressed();
+        Exit();
     }
 }
