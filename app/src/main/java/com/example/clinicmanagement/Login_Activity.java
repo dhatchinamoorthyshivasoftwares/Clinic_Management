@@ -37,7 +37,7 @@ public class Login_Activity extends AppCompatActivity {
     Context context;
     ImageView btn_back;
     private String codeString = "";
-    public  static  String getdeviceid="",USER_CODE="",USER_NAME="",ACTIVE_STATUS="",LOGIN_TOKEN="";
+    public  static  String getdeviceid="",USER_ID="",USER_CODE="",USER_NAME="",ACTIVE_STATUS="",LOGIN_TOKEN="";
     private static final int MAX_LENGHT = 4;
 
     @Override
@@ -421,6 +421,7 @@ public class Login_Activity extends AppCompatActivity {
                 if(success.equals("success") || success.equals("unsuccess")) {
                         USER_CODE = jsonObj_userinfo.getString("user_code");
                         USER_NAME = jsonObj_userinfo.getString("username");
+                        USER_ID  = jsonObj_userinfo.getString("user_id");
 
                 }
                 if(success.equals("unsuccess")){
@@ -600,6 +601,7 @@ public class Login_Activity extends AppCompatActivity {
                         if(success.equals("Login Success")){
                             USER_CODE =  new JSONObject(jsonObj.getString("UserInfo")).getString("user_code");
                             USER_NAME =  new JSONObject(jsonObj.getString("UserInfo")).getString("username");
+                            USER_ID  = new JSONObject(jsonObj.getString("UserInfo")).getString("user_id");
                         }
                     }
                 }

@@ -1,6 +1,9 @@
 package com.example.clinicmanagement;
 
+import static com.example.clinicmanagement.Login_Activity.USER_ID;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -21,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -59,13 +63,13 @@ public class Appointment_Activity extends AppCompatActivity {
     String DATE ="";
     android.icu.util.Calendar calendar;
     SimpleDateFormat mdformat = new SimpleDateFormat("dd-MM-yyyy");
-    TextView date_tv,from_to_date_tv,schedule_time_txt,patient_name_txt,patient_id_txt,save_txt;
+    TextView date_tv,from_to_date_tv,schedule_time_txt,save_txt;
     ImageView  power_img,search_enter,search_clear,close,back_btn;
     LinearLayout LL_booking_screen,LL_date,LL_search_list;
-    EditText search_edittext,doctor_note_txt;
+    EditText search_edittext,doctor_note_txt,patient_name_txt,patient_id_txt;
     LinearLayout search_card,LL_top;
     String[] datestr ;
-    String startDateStr,strDate;
+    String startDateStr,strDate,SELECTED_DATE="";
     Date monthFirstDay;
     Date monthLastDay;
     Calendar calendar1;
@@ -73,12 +77,16 @@ public class Appointment_Activity extends AppCompatActivity {
     ArrayAdapter spin_adapter;
     Dialog schedule_dialog;
     Context context;
-    ListView list_view,listview_card;
+    ListView list_view,search_listview;
     ScheduleListAdapter scheduleListAdapter;
+    SearchListAdapter searchListAdapter;
     ArrayList<Schedule_Details> schedule_details = new ArrayList<>();
+
+    ArrayList<Searchlist_Details> searchlist_details = new ArrayList<>();
     private boolean doubleBackToExitPressedOnce;
     private Handler mHandler;
-
+    String PATIENT_TOKEN ="",SAVE_BOOKING_TOKEN="";
+    String PATIENT_NAME ="",PATIENT_ID="",SCHEDULE_ID = "",DOCTOR_NOTE="";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,11 +115,11 @@ public class Appointment_Activity extends AppCompatActivity {
 
         schedule_time_txt  = (TextView) findViewById(R.id.schedule_time_txt);
 
-        patient_name_txt  = (TextView) findViewById(R.id.patient_name_txt);
-        patient_id_txt  = (TextView) findViewById(R.id.patient_id_txt);
+        patient_name_txt  = (EditText) findViewById(R.id.patient_name_txt);
+        patient_id_txt  = (EditText) findViewById(R.id.patient_id_txt);
         save_txt  = (TextView) findViewById(R.id.save_txt);
 
-        listview_card = (ListView) findViewById(R.id.listview_card);
+        search_listview = (ListView) findViewById(R.id.search_listview);
 
         back_btn = (ImageView) findViewById(R.id.back_btn);
 
@@ -135,6 +143,28 @@ public class Appointment_Activity extends AppCompatActivity {
         });*/
 
 
+        save_txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PATIENT_NAME = patient_name_txt.getText().toString();
+                PATIENT_ID = patient_id_txt.getText().toString();
+                DOCTOR_NOTE = doctor_note_txt.getText().toString();
+
+              /* if(PATIENT_NAME.equals("")){
+                    patient_name_txt.setError("Please enter patient name");
+                }
+                if(PATIENT_ID.equals("")){
+                    patient_id_txt.setError("Please enter patient id");
+                }
+                if(SCHEDULE_ID.equals("")){
+                    schedule_time_txt.setError("Select schedule time");
+                }*/
+                if(!PATIENT_NAME.equals("") &&  !PATIENT_ID.equals("") && !SCHEDULE_ID.equals("") ){
+                    new AsyncSaveBookingJwt().execute(PATIENT_ID,USER_ID,SCHEDULE_ID,DOCTOR_NOTE,SELECTED_DATE);
+                }
+
+            }
+        });
         if(close != null) {
             close.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -281,7 +311,7 @@ public class Appointment_Activity extends AppCompatActivity {
                                                 from_to_date_tv.setText(date);
                                                 String getdate = from_to_date_tv.getText().toString();
                                                 datestr = getdate.split(" to ");
-
+                                                new AsyncGetPatientsJwt().execute("","2",datestr[0],datestr[1]);
                                             }
                                         });
 
@@ -361,23 +391,47 @@ public class Appointment_Activity extends AppCompatActivity {
         search_enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (LL_search_list.getVisibility() == View.GONE) {
-                    LL_search_list.setVisibility(View.VISIBLE);
-                }
 
                 if(LL_date.getVisibility() == View.VISIBLE){
                     LL_date.setVisibility(View.GONE);
                 }
 
-                if(LL_booking_screen.getVisibility() ==View.VISIBLE){
-                    LL_booking_screen.setVisibility(View.GONE);
+                if(search_edittext != null) {
+                    if (search_edittext.getText().toString().length() >=3) {
+                        new AsyncGetPatientsJwt().execute(search_edittext.getText().toString(),"1","","");
+                    }else{
+                        Toast.makeText(context, "Please enter minimum three character", Toast.LENGTH_SHORT).show();
+
+                        if(LL_date.getVisibility() == View.VISIBLE){
+                            LL_date.setVisibility(View.GONE);
+                        }
+                        if (LL_search_list.getVisibility() == View.VISIBLE) {
+                            LL_search_list.setVisibility(View.GONE);
+                        }
+                        if(LL_booking_screen.getVisibility() ==View.GONE){
+                            LL_booking_screen.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
+
             }
         });
         search_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 search_edittext.setText("");
+                search_listview.setAdapter(null);
+                if(LL_date.getVisibility() == View.VISIBLE){
+                    LL_date.setVisibility(View.GONE);
+                }
+
+                if (LL_search_list.getVisibility() == View.VISIBLE) {
+                    LL_search_list.setVisibility(View.GONE);
+                }
+
+                if(LL_booking_screen.getVisibility() ==View.GONE){
+                    LL_booking_screen.setVisibility(View.VISIBLE);
+                }
             }
         });
         power_img.setOnClickListener(new View.OnClickListener() {
@@ -400,7 +454,7 @@ public class Appointment_Activity extends AppCompatActivity {
         date_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // openDatePickerDialog(view);
+                openDatePickerDialog(view);
             }
         });
 
@@ -417,7 +471,12 @@ public class Appointment_Activity extends AppCompatActivity {
         if(LL_booking_screen.getVisibility() ==View.GONE){
             LL_booking_screen.setVisibility(View.VISIBLE);
         }
-     new AsyncSchedule().execute();
+
+        new AsyncSchedule().execute();
+
+        patient_name_txt.setFocusable(false);
+        patient_id_txt.setFocusable(false);
+
     }
 
     private void OpenScheduleDialog() {
@@ -458,6 +517,13 @@ public class Appointment_Activity extends AppCompatActivity {
                 if(LL_booking_screen.getVisibility() ==View.GONE){
                     LL_booking_screen.setVisibility(View.VISIBLE);
                 }
+                search_listview.setAdapter(null);
+                search_edittext.setText("");
+
+                patient_name_txt.setText("");
+                patient_id_txt.setText("");
+              //  patient_name_txt.setFocusableInTouchMode(true);
+              //  patient_id_txt.setFocusableInTouchMode(true);
                 break;
             case R.id.rdb_date:
                 if(checked)
@@ -478,6 +544,16 @@ public class Appointment_Activity extends AppCompatActivity {
                 if(LL_booking_screen.getVisibility() ==View.GONE){
                     LL_booking_screen.setVisibility(View.VISIBLE);
                 }
+               // new AsyncGetPatientsJwt().execute("","2","15-11-2022","22-11-2022");
+                search_listview.setAdapter(null);
+                search_edittext.setText("");
+
+                patient_name_txt.setText("");
+                patient_id_txt.setText("");
+
+              //  patient_name_txt.setFocusableInTouchMode(true);
+              //  patient_id_txt.setFocusableInTouchMode(true);
+
                 break;
             default:
                 break;
@@ -526,7 +602,9 @@ public class Appointment_Activity extends AppCompatActivity {
                 (view, year, monthOfYear, dayOfMonth) -> {
                     //String selectedDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
                     String selectedDate =String.format("%02d-%02d-%d", dayOfMonth,(monthOfYear + 1), year);
+                    String selectedDate_db =String.format("%02d-%02d-%d", year,(monthOfYear + 1), dayOfMonth);
                     date_tv.setText(String.valueOf(selectedDate));
+                    SELECTED_DATE = selectedDate_db;
                 }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
         // datePickerDialog.getDatePicker().setMinDate(cal1.getTimeInMillis());
@@ -601,6 +679,7 @@ public class Appointment_Activity extends AppCompatActivity {
                 public void onClick(View view) {
                     schedule_time_txt.setText("");
                     schedule_time_txt.setText(String.valueOf(myList.get(position).getSchedule_name()));
+                    SCHEDULE_ID = myList.get(position).getSchedule_id();
                     if(schedule_dialog != null) {
                         schedule_dialog.dismiss();
                     }
@@ -611,6 +690,101 @@ public class Appointment_Activity extends AppCompatActivity {
         }
 
     }
+
+
+    public class SearchListAdapter extends BaseAdapter {
+        LayoutInflater inflater;
+        Context context;
+        ArrayList<Searchlist_Details> searchList;
+
+        public SearchListAdapter(Context context, ArrayList<Searchlist_Details> myList) {
+            this.searchList = myList;
+            this.context = context;
+            inflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return searchList.size();
+        }
+
+        @Override
+        public Searchlist_Details getItem(int position) {
+            return (Searchlist_Details) searchList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            if (getCount() > 0) {
+                return getCount();
+            } else {
+                return super.getViewTypeCount();
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
+        @SuppressLint("InflateParams")
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder mHolder;
+
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.searchlist_card, parent, false);
+                mHolder = new ViewHolder();
+                try {
+                    mHolder.patient_name_tv = (TextView) convertView.findViewById(R.id.patient_name_tv);
+                    mHolder.gender_tv = (TextView) convertView.findViewById(R.id.gender_tv);
+                    mHolder.areaname_tv = (TextView) convertView.findViewById(R.id.areaname_tv);
+                    mHolder.mobileno_tv = (TextView) convertView.findViewById(R.id.mobileno_tv);
+
+                } catch (Exception e) {
+                    Log.i("Route ===============>", e.toString());
+
+                }
+                convertView.setTag(mHolder);
+            } else {
+                mHolder = (ViewHolder) convertView.getTag();
+            }
+            mHolder.patient_name_tv.setText(String.valueOf(searchList.get(position).getPatient_name()));
+            mHolder.gender_tv.setText(String.valueOf(searchList.get(position).getGender_name()));
+            mHolder.areaname_tv.setText(String.valueOf(searchList.get(position).getCity_name()));
+            mHolder.mobileno_tv.setText(String.valueOf(searchList.get(position).getMobile_number()));
+            //convertView.setBackgroundResource(R.drawable.custom_borberless_ripple);
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    patient_name_txt.setText("");
+                    patient_id_txt.setText("");
+                    if (LL_search_list.getVisibility() == View.VISIBLE) {
+                        LL_search_list.setVisibility(View.GONE);
+                    }
+                    if(LL_booking_screen.getVisibility() ==View.GONE){
+                        LL_booking_screen.setVisibility(View.VISIBLE);
+                    }
+                    search_listview.setAdapter(null);
+                    patient_name_txt.setText(String.valueOf(searchList.get(position).getPatient_name()));
+                    patient_id_txt.setText(String.valueOf(searchList.get(position).getPatient_id()));
+
+                    patient_name_txt.setFocusable(false);
+                    patient_id_txt.setFocusable(false);
+                }
+            });
+            return convertView;
+
+        }
+
+    }
+
 
     public class AsyncSchedule extends
             AsyncTask<String, JSONObject,Boolean> {
@@ -640,6 +814,7 @@ public class Appointment_Activity extends AppCompatActivity {
                         jsonArray = jsonObj_body.getJSONArray("Schedule_Array");
 
                         if(jsonArray != null){
+                            schedule_details.clear();
                              for(int i=0;i<jsonArray.length();i++){
                                  JSONObject json = jsonArray.getJSONObject(i);
                                  schedule_details.add(new Schedule_Details(json.getString("schedule_name"),json.getString("schedule_id"),json.getString("active_status")));
@@ -674,6 +849,260 @@ public class Appointment_Activity extends AppCompatActivity {
         }
     }
 
+    //GET searchPatientsJwt
+    public class AsyncGetPatientsJwt extends
+            AsyncTask<String, JSONObject,Boolean> {
+        JSONObject jsonObj, jsonObj_body,jsonObj_userinfo;
+        JSONArray jsonArray;
+        String message, Patient_token;
+        String  success="";
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            //Try Block
+            try {
+                //Make webservice connection and call APi
+
+                RestAPI objRestAPI = new RestAPI();
+                if (isNetworkAvailable()) {
+                    jsonObj = objRestAPI.GetPatientJWT(params[0],params[1],params[2],params[3]);
+                    message = "";
+                    PATIENT_TOKEN = "";
+
+
+                    if(jsonObj!=null) {
+                      //  jsonObj_body = new JSONObject(jsonObj.getString("body"));
+                        PATIENT_TOKEN = new JSONObject(jsonObj.getString("body")).getString("token");
+                    }
+
+                }
+            }
+            //Catch Block UserAuth true
+            catch (Exception e) {
+                Log.d("AsyncLoggerService", "Message");
+                Log.d("AsyncLoggerService", e.getMessage());
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+
+            Log.d("APPONITMENT ACTIVITY ========(PATIENT TOKEN)=======>",  PATIENT_TOKEN);
+            if(!PATIENT_TOKEN.equals("")){
+                new AsyncSearchlist().execute();
+            }
+        }
+    }
+
+    //GET SEARCH LIST
+    public class AsyncSearchlist extends
+            AsyncTask<String, JSONObject,Boolean> {
+        JSONObject jsonObj, jsonObj_body,jsonObj_userinfo;
+        JSONArray jsonArray;
+        String message, token;
+        String  success="";
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            //Try Block
+            try {
+                //Make webservice connection and call APi
+
+                RestAPI objRestAPI = new RestAPI();
+                if (isNetworkAvailable()) {
+                    jsonObj = objRestAPI.GetPatient(PATIENT_TOKEN);
+                    message = "";
+                    token = "";
+
+
+                    if(jsonObj!=null) {
+                        jsonObj_body = new JSONObject(jsonObj.getString("body"));
+                    }
+
+                    if(jsonObj_body != null) {
+                        jsonArray = jsonObj_body.getJSONArray("Searchlist_Array");
+
+                        if(jsonArray != null){
+                            searchlist_details.clear();
+                            for(int i=0;i<jsonArray.length();i++){
+                                JSONObject json = jsonArray.getJSONObject(i);
+                                //  schedule_details.add(new Schedule_Details(json.getString("schedule_name"),json.getString("schedule_id"),json.getString("active_status")));
+                                searchlist_details.add(new Searchlist_Details(json.getString("patient_id"),json.getString("patient_name"),
+                                                      json.getString("guardian_name"),json.getString("date_of_birth"),json.getString("gender_id"),
+                                                      json.getString("city_id"),json.getString("mobile_number"),json.getString("uhid"),
+                                                      json.getString("age_day"), json.getString("age_month"), json.getString("age_year"),
+                                                      json.getString("dob_type"), json.getString("gender_name"), json.getString("city_name")));
+                                Log.d("APPONITMENT ACTIVITY ========(Searchlist Array)====("+String.valueOf(i+1)+")====>", json.toString());
+                            }
+                        }
+                    }
+                }
+            }
+            //Catch Block UserAuth true
+            catch (Exception e) {
+                Log.d("AsyncLoggerService", "Message");
+                Log.d("AsyncLoggerService", e.getMessage());
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+            if(searchlist_details.size()>0){
+
+                if (LL_search_list.getVisibility() == View.GONE) {
+                    LL_search_list.setVisibility(View.VISIBLE);
+                }
+
+                if(LL_booking_screen.getVisibility() ==View.VISIBLE){
+                    LL_booking_screen.setVisibility(View.GONE);
+                }
+                searchListAdapter = new SearchListAdapter(getApplicationContext(),searchlist_details);
+                search_listview.setAdapter(searchListAdapter);
+                searchListAdapter.notifyDataSetChanged();
+            }else{
+                search_listview.setAdapter(null);
+
+                if (LL_search_list.getVisibility() == View.VISIBLE) {
+                    LL_search_list.setVisibility(View.GONE);
+                }
+
+                if(LL_booking_screen.getVisibility() ==View.GONE){
+                    LL_booking_screen.setVisibility(View.VISIBLE);
+                }
+                Toast.makeText(context, "No record found", Toast.LENGTH_SHORT).show();
+
+            }
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        }
+    }
+
+
+    //GET saveBookingJwt
+    public class AsyncSaveBookingJwt extends
+            AsyncTask<String, JSONObject,Boolean> {
+        JSONObject jsonObj, jsonObj_body,jsonObj_userinfo;
+        JSONArray jsonArray;
+        String message, Patient_token;
+        String  success="";
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            //Try Block
+            try {
+                //Make webservice connection and call APi
+
+                RestAPI objRestAPI = new RestAPI();
+                if (isNetworkAvailable()) {
+                    jsonObj = objRestAPI.GetSaveBookingJWT(params[0],params[1],params[2],params[3],params[4]);
+                    message = "";
+                    SAVE_BOOKING_TOKEN = "";
+
+
+                    if(jsonObj!=null) {
+                        //  jsonObj_body = new JSONObject(jsonObj.getString("body"));
+                        SAVE_BOOKING_TOKEN = new JSONObject(jsonObj.getString("body")).getString("token");
+                    }
+
+                }
+            }
+            //Catch Block UserAuth true
+            catch (Exception e) {
+                Log.d("AsyncLoggerService", "Message");
+                Log.d("AsyncLoggerService", e.getMessage());
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+
+            Log.d("APPONITMENT ACTIVITY ========(SaveBookingJwt TOKEN)=======>",  SAVE_BOOKING_TOKEN);
+            if(!SAVE_BOOKING_TOKEN.equals("")){
+                new AsyncSaveBooking().execute();
+            }
+        }
+    }
+
+
+    //GET SEARCH LIST
+    public class AsyncSaveBooking extends
+            AsyncTask<String, JSONObject,Boolean> {
+        JSONObject jsonObj, jsonObj_body,jsonObj_userinfo;
+        JSONArray jsonArray;
+        String message, token;
+        String  success="";
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            //Try Block
+            try {
+                //Make webservice connection and call APi
+
+                RestAPI objRestAPI = new RestAPI();
+                if (isNetworkAvailable()) {
+                    jsonObj = objRestAPI.GetSaveBooking(SAVE_BOOKING_TOKEN);
+                    message = "";
+
+                    if(jsonObj!=null) {
+
+                        message = new JSONObject(jsonObj.getString("body")).getString("message");
+                    }
+
+                }
+            }
+            //Catch Block UserAuth true
+            catch (Exception e) {
+                Log.d("AsyncLoggerService", "Message");
+                Log.d("AsyncLoggerService", e.getMessage());
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+
+            if(message.equals("success")) {
+                patient_name_txt.setText("");
+                patient_id_txt.setText("");
+                schedule_time_txt.setText("");
+                doctor_note_txt.setText("");
+                search_edittext.setText("");
+                Toast.makeText(context, "Saved Successfully", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -681,7 +1110,7 @@ public class Appointment_Activity extends AppCompatActivity {
     }
 
     private class ViewHolder {
-        TextView schedule_tv,remarks;
+        TextView schedule_tv,remarks,patient_name_tv,gender_tv,areaname_tv,mobileno_tv;
         LinearLayout listLL;
         CardView card_view;
     }
