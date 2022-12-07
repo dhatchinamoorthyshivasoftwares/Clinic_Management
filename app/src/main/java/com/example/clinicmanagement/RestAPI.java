@@ -1,5 +1,7 @@
 package com.example.clinicmanagement;
 
+import static com.example.clinicmanagement.Login_Activity.USER_CODE;
+
 import android.util.Log;
 
 import org.json.JSONException;
@@ -26,7 +28,7 @@ public class RestAPI {
     // public  static  String neturl = "";
 
     public  static  String urlString= "http://172.16.1.151:8080/api/mobileapi";
-    public  static  String neturl = "";
+    public  static  String neturl = "http://172.16.1.151:8080/";
 
 
     public String GetJSONResponse(String paraURL, String paraData) {
@@ -190,7 +192,7 @@ public class RestAPI {
         return myResponse;
     }
 
-    public JSONObject GetSchedule(String usercode ) throws Exception {
+    public JSONObject GetSchedule(String current_date ) throws Exception {
 
        /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
@@ -201,7 +203,7 @@ public class RestAPI {
         JSONObject myResponse = null;
 
         URL url = new URL(Url); //Enter URL here
-        String json = "{\"usercode\": \""+usercode+"\"}";
+        String json = "{\"current_date\": \""+current_date+"\"}";
         //Log.e("", "JSON_URL=========>" + json);
         //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -401,7 +403,7 @@ public class RestAPI {
     }
 
 
-    public JSONObject GetSaveBookingJWT(String patient_id,String user_id,String schedule_id,String doctor_note,String booking_date) throws Exception {
+    public JSONObject GetSaveBookingJWT(String patient_id,String user_id,String schedule_id,String doctor_note,String booking_date,String employee_id) throws Exception {
 
        /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
@@ -412,7 +414,7 @@ public class RestAPI {
         JSONObject myResponse = null;
 
         URL url = new URL(Url); //Enter URL here
-        String json = "{\"patient_id\": \""+patient_id+"\",\"user_id\":\""+user_id+"\",\"schedule_id\":\""+schedule_id+"\",\"doctor_note\":\""+doctor_note+"\",\"booking_date\":\""+booking_date+"\"}";
+        String json = "{\"patient_id\": \""+patient_id+"\",\"user_id\":\""+user_id+"\",\"schedule_id\":\""+schedule_id+"\",\"doctor_note\":\""+doctor_note+"\",\"booking_date\":\""+booking_date+"\",\"user_code\":\""+USER_CODE+"\",\"employee_id\":\""+employee_id+"\"}";
         //Log.e("", "JSON_URL=========>" + json);
         //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -447,6 +449,58 @@ public class RestAPI {
             JSONTokener tokener = new JSONTokener(sb.toString());
             myResponse = new JSONObject(tokener);
             Log.e("", "REST API =====(SaveBookingJWT JSON RESPONSE)====>" + myResponse.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    public JSONObject GetUpdateBooking(String user_code,String schedule_id,String doctor_note,String booking_id,String booking_date,String employee_id) throws Exception {
+
+       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+        Date d = dateFormatprev.parse(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String changedDate = dateFormat.format(d);
+        */
+        String Url = urlString+"/updateBooking";
+        JSONObject myResponse = null;
+
+        URL url = new URL(Url); //Enter URL here
+        String json = "{\"user_code\": \""+user_code+"\",\"schedule_id\":\""+schedule_id+"\",\"doctor_note\":\""+doctor_note+"\",\"booking_id\":\""+booking_id+"\",\"booking_date\":\""+booking_date+"\",\"employee_id\":\""+employee_id+"\"}";
+        //Log.e("", "JSON_URL=========>" + json);
+        //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
+        httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // here you are setting the Content-Type for the data you are sending which is application/json
+        httpURLConnection.setRequestProperty("Accept", "application/json");
+        httpURLConnection.connect();
+
+        DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+        wr.writeBytes(json);
+        wr.flush();
+        wr.close();
+
+        InputStream response = httpURLConnection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+
+        // Log.e("", "LOGIN URL=========>" + response);
+        Log.e("", "REST API =====(Update Booking PARAMS)====>" + json);
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                // sb.append(line+"\n");
+                sb.append(line);
+                Log.e("", "LOGIN URL===========>" + line);
+            }
+
+            //JSONTokener tokener = new JSONTokener(line);
+            // Token_details = new JSONObject(tokener);
+            JSONTokener tokener = new JSONTokener(sb.toString());
+            myResponse = new JSONObject(tokener);
+            Log.e("", "REST API =====(Update Booking JSON RESPONSE)====>" + myResponse.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -499,6 +553,215 @@ public class RestAPI {
             JSONTokener tokener = new JSONTokener(sb.toString());
             myResponse = new JSONObject(tokener);
             Log.e("", "REST API =====(SaveBooking JSON RESPONSE)====>" + myResponse.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return myResponse;
+    }
+
+
+    public JSONObject GetBookingList(String current_Date) throws Exception {
+
+       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+        Date d = dateFormatprev.parse(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String changedDate = dateFormat.format(d);
+        */
+        String Url = urlString+"/listBooking";
+        JSONObject myResponse = null;
+
+        URL url = new URL(Url); //Enter URL here
+        String json = "{\"current_Date\": \""+current_Date+"\"}";
+        //Log.e("", "JSON_URL=========>" + json);
+        //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
+        httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // here you are setting the Content-Type for the data you are sending which is application/json
+        httpURLConnection.setRequestProperty("Accept", "application/json");
+        httpURLConnection.connect();
+
+        DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+        wr.writeBytes(json);
+        wr.flush();
+        wr.close();
+
+        InputStream response = httpURLConnection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+
+        // Log.e("", "LOGIN URL=========>" + response);
+        Log.e("", "REST API =====(Booking List PARAMS)====>" + json);
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                // sb.append(line+"\n");
+                sb.append(line);
+                Log.e("", "LOGIN URL===========>" + line);
+            }
+
+            //JSONTokener tokener = new JSONTokener(line);
+            // Token_details = new JSONObject(tokener);
+            JSONTokener tokener = new JSONTokener(sb.toString());
+            myResponse = new JSONObject(tokener);
+            Log.e("", "REST API =====(Booking List JSON RESPONSE)====>" + myResponse.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    public JSONObject GetDoctorList(String user_code) throws Exception {
+
+       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+        Date d = dateFormatprev.parse(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String changedDate = dateFormat.format(d);
+        */
+        String Url = urlString+"/listDoctor";
+        JSONObject myResponse = null;
+
+        URL url = new URL(Url); //Enter URL here
+        String json = "{\"user_code\": \""+user_code+"\"}";
+        //Log.e("", "JSON_URL=========>" + json);
+        //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
+        httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // here you are setting the Content-Type for the data you are sending which is application/json
+        httpURLConnection.setRequestProperty("Accept", "application/json");
+        httpURLConnection.connect();
+
+        DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+        wr.writeBytes(json);
+        wr.flush();
+        wr.close();
+
+        InputStream response = httpURLConnection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+
+        // Log.e("", "LOGIN URL=========>" + response);
+        Log.e("", "REST API =====(Doctor List PARAMS)====>" + json);
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                // sb.append(line+"\n");
+                sb.append(line);
+                Log.e("", "LOGIN URL===========>" + line);
+            }
+
+            //JSONTokener tokener = new JSONTokener(line);
+            // Token_details = new JSONObject(tokener);
+            JSONTokener tokener = new JSONTokener(sb.toString());
+            myResponse = new JSONObject(tokener);
+            Log.e("", "REST API =====(Doctor List JSON RESPONSE)====>" + myResponse.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    public JSONObject GetCompanyDataJwt(String user_id) throws Exception {
+
+       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+        Date d = dateFormatprev.parse(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String changedDate = dateFormat.format(d);
+        */
+        String Url = neturl+"api/common/companyDataJwt";
+        JSONObject myResponse = null;
+
+        URL url = new URL(Url); //Enter URL here
+        String json = "{\"user_id\": "+0+"}";
+        //Log.e("", "JSON_URL=========>" + json);
+        //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
+        httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // here you are setting the Content-Type for the data you are sending which is application/json
+        httpURLConnection.setRequestProperty("Accept", "application/json");
+        httpURLConnection.connect();
+
+        DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+        wr.writeBytes(json);
+        wr.flush();
+        wr.close();
+
+        InputStream response = httpURLConnection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+
+        // Log.e("", "LOGIN URL=========>" + response);
+        Log.e("", "REST API =====(COMPANY DATA PARAMS)====>" + json);
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                // sb.append(line+"\n");
+                sb.append(line);
+                Log.e("", "LOGIN URL===========>" + line);
+            }
+
+            //JSONTokener tokener = new JSONTokener(line);
+            // Token_details = new JSONObject(tokener);
+            JSONTokener tokener = new JSONTokener(sb.toString());
+            myResponse = new JSONObject(tokener);
+            Log.e("", "REST API =====(COMPANY DATA JSON RESPONSE)====>" + myResponse.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    public JSONObject GetCompanyData(String jwtToken) throws Exception {
+
+       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+        Date d = dateFormatprev.parse(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String changedDate = dateFormat.format(d);
+        */
+        String Url = neturl+"api/common/companyData";
+        JSONObject myResponse = null;
+
+        URL url = new URL(Url); //Enter URL here
+        String json = "{\"jwtToken\": \""+jwtToken+"\"}";
+        //Log.e("", "JSON_URL=========>" + json);
+        //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
+        httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // here you are setting the Content-Type for the data you are sending which is application/json
+        httpURLConnection.setRequestProperty("Accept", "application/json");
+        httpURLConnection.connect();
+
+        DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+        wr.writeBytes(json);
+        wr.flush();
+        wr.close();
+
+        InputStream response = httpURLConnection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+
+        // Log.e("", "LOGIN URL=========>" + response);
+        Log.e("", "REST API =====(COMPANY DATA PARAMS)====>" + json);
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                // sb.append(line+"\n");
+                sb.append(line);
+                Log.e("", "LOGIN URL===========>" + line);
+            }
+
+            //JSONTokener tokener = new JSONTokener(line);
+            // Token_details = new JSONObject(tokener);
+            JSONTokener tokener = new JSONTokener(sb.toString());
+            myResponse = new JSONObject(tokener);
+            Log.e("", "REST API =====(COMPANY DATA JSON RESPONSE)====>" + myResponse.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,12 +1,15 @@
 package com.example.clinicmanagement;
 
+import static com.example.clinicmanagement.Login_Activity.USER_CODE;
 import static com.example.clinicmanagement.Login_Activity.USER_ID;
+import static com.example.clinicmanagement.Splash_Screen.COMPANY_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +40,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.util.Pair;
@@ -61,33 +65,35 @@ import java.util.Date;
 
 public class Appointment_Activity extends AppCompatActivity {
     String DATE ="";
-    android.icu.util.Calendar calendar;
+   Calendar cal;
     SimpleDateFormat mdformat = new SimpleDateFormat("dd-MM-yyyy");
-    TextView date_tv,from_to_date_tv,schedule_time_txt,save_txt;
-    ImageView  power_img,search_enter,search_clear,close,back_btn;
+    SimpleDateFormat mdformat_db = new SimpleDateFormat("yyyy-MM-dd");
+    TextView title_tv,doctor_name_txt,doctor_title_tv,booking_date_tv,date_tv,from_to_date_tv,schedule_time_txt,save_txt;
+    ImageView  close_doctor,power_img,search_enter,search_clear,close,back_btn;
     LinearLayout LL_booking_screen,LL_date,LL_search_list;
     EditText search_edittext,doctor_note_txt,patient_name_txt,patient_id_txt;
     LinearLayout search_card,LL_top;
     String[] datestr ;
-    String startDateStr,strDate,SELECTED_DATE="";
+    String startDateStr,strDate,SELECTED_DATE="",EMPLOYEE_ID="";
     Date monthFirstDay;
     Date monthLastDay;
     Calendar calendar1;
     ArrayList<String> schedule_time = new ArrayList<>();
     ArrayAdapter spin_adapter;
-    Dialog schedule_dialog;
+    Dialog schedule_dialog,doctor_dialog;
     Context context;
-    ListView list_view,search_listview;
+    ListView list_view,search_listview,list_view_doctor;
     ScheduleListAdapter scheduleListAdapter;
     SearchListAdapter searchListAdapter;
     ArrayList<Schedule_Details> schedule_details = new ArrayList<>();
-
     ArrayList<Searchlist_Details> searchlist_details = new ArrayList<>();
+    ArrayList<Doctorlist_Details> doctorlist_details = new ArrayList<>();
     private boolean doubleBackToExitPressedOnce;
     private Handler mHandler;
     String PATIENT_TOKEN ="",SAVE_BOOKING_TOKEN="";
     String PATIENT_NAME ="",PATIENT_ID="",SCHEDULE_ID = "",DOCTOR_NOTE="";
-
+    ProgressDialog progressDialog;
+    DoctorListAdapter doctorListAdapter;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment);
@@ -95,6 +101,7 @@ public class Appointment_Activity extends AppCompatActivity {
         context = this;
         mHandler = new Handler();
         date_tv = (TextView) findViewById(R.id.date_tv);
+        booking_date_tv = (TextView) findViewById(R.id.booking_date_tv);
         power_img = (ImageView) findViewById(R.id.power_img);
 
         from_to_date_tv = (TextView) findViewById(R.id.from_to_date_tv);
@@ -107,27 +114,54 @@ public class Appointment_Activity extends AppCompatActivity {
         LL_search_list = (LinearLayout) findViewById(R.id.LL_search_list);
         LL_top = (LinearLayout) findViewById(R.id.LL_top);
 
-        doctor_note_txt = (EditText) findViewById(R.id.doctor_note_txt);
+
 
         search_edittext = (EditText) findViewById(R.id.search_edittext);
 
         search_card = (LinearLayout) findViewById(R.id.search_card);
 
-        schedule_time_txt  = (TextView) findViewById(R.id.schedule_time_txt);
-
         patient_name_txt  = (EditText) findViewById(R.id.patient_name_txt);
         patient_id_txt  = (EditText) findViewById(R.id.patient_id_txt);
+        doctor_note_txt = (EditText) findViewById(R.id.doctor_note_txt);
+        schedule_time_txt  = (TextView) findViewById(R.id.schedule_time_txt);
         save_txt  = (TextView) findViewById(R.id.save_txt);
 
         search_listview = (ListView) findViewById(R.id.search_listview);
 
         back_btn = (ImageView) findViewById(R.id.back_btn);
 
+        doctor_name_txt = (TextView) findViewById(R.id.doctor_name_txt);
+
         schedule_dialog = new Dialog(context);
         schedule_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         schedule_dialog.setContentView(R.layout.schedule_popup);
         list_view = (ListView) schedule_dialog.findViewById(R.id.list_view);
         close = (ImageView) schedule_dialog.findViewById(R.id.close);
+        title_tv  = (TextView) schedule_dialog.findViewById(R.id.title_tv);
+
+        doctor_dialog = new Dialog(context);
+        doctor_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        doctor_dialog.setContentView(R.layout.schedule_popup);
+
+        doctor_title_tv = (TextView) doctor_dialog.findViewById(R.id.title_tv);
+        close_doctor = (ImageView) doctor_dialog.findViewById(R.id.close);
+        list_view_doctor  = (ListView) doctor_dialog.findViewById(R.id.list_view);
+
+        doctor_title_tv.setText("Select Doctor");
+        title_tv.setText("Select Schedule Time");
+
+        doctor_name_txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AsyncDoctorlist().execute();
+            }
+        }) ;
+        close_doctor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doctor_dialog.dismiss();
+            }
+        });
 
        /* doctor_note_txt.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -147,7 +181,7 @@ public class Appointment_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PATIENT_NAME = patient_name_txt.getText().toString();
-                PATIENT_ID = patient_id_txt.getText().toString();
+                //PATIENT_ID = patient_id_txt.getText().toString();
                 DOCTOR_NOTE = doctor_note_txt.getText().toString();
 
               /* if(PATIENT_NAME.equals("")){
@@ -159,8 +193,8 @@ public class Appointment_Activity extends AppCompatActivity {
                 if(SCHEDULE_ID.equals("")){
                     schedule_time_txt.setError("Select schedule time");
                 }*/
-                if(!PATIENT_NAME.equals("") &&  !PATIENT_ID.equals("") && !SCHEDULE_ID.equals("") ){
-                    new AsyncSaveBookingJwt().execute(PATIENT_ID,USER_ID,SCHEDULE_ID,DOCTOR_NOTE,SELECTED_DATE);
+                if(!PATIENT_NAME.equals("") &&  !PATIENT_ID.equals("") && !SCHEDULE_ID.equals("") && !EMPLOYEE_ID.equals("")){
+                    new AsyncSaveBookingJwt().execute(PATIENT_ID,USER_ID,SCHEDULE_ID,DOCTOR_NOTE,SELECTED_DATE,EMPLOYEE_ID);
                 }
 
             }
@@ -326,7 +360,11 @@ public class Appointment_Activity extends AppCompatActivity {
         schedule_time_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OpenScheduleDialog();
+           //     if(!booking_date_tv.getText().toString().equals("")) {
+                    OpenScheduleDialog();
+//                }else{
+//                    Toast.makeText(context, "Please select booking date", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
         spin_adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item,schedule_time) {
@@ -376,15 +414,21 @@ public class Appointment_Activity extends AppCompatActivity {
 //                        if(LL_booking_screen.getVisibility() ==View.VISIBLE){
 //                            LL_booking_screen.setVisibility(View.GONE);
 //                        }
-                    if(search_clear.getVisibility() == View.GONE){
-                        search_clear.setVisibility(View.VISIBLE);
-                    }
-                }
-                if(editable.length()==0) {
                     if(search_clear.getVisibility() == View.VISIBLE){
                         search_clear.setVisibility(View.GONE);
                     }
+                    if(search_enter.getVisibility() ==View.GONE){
+                        search_enter.setVisibility(View.VISIBLE);
+                    }
                 }
+                /*if(editable.length()==0) {
+                    if(search_clear.getVisibility() == View.VISIBLE){
+                        search_clear.setVisibility(View.GONE);
+                    }
+                    if(search_enter.getVisibility() ==View.GONE){
+                        search_enter.setVisibility(View.VISIBLE);
+                    }
+                }*/
             }
         });
 
@@ -398,6 +442,13 @@ public class Appointment_Activity extends AppCompatActivity {
 
                 if(search_edittext != null) {
                     if (search_edittext.getText().toString().length() >=3) {
+                        if(search_clear.getVisibility() == View.GONE){
+                            search_clear.setVisibility(View.VISIBLE);
+                        }
+                        if(search_enter.getVisibility() ==View.VISIBLE){
+                            search_enter.setVisibility(View.GONE);
+                        }
+
                         new AsyncGetPatientsJwt().execute(search_edittext.getText().toString(),"1","","");
                     }else{
                         Toast.makeText(context, "Please enter minimum three character", Toast.LENGTH_SHORT).show();
@@ -419,6 +470,12 @@ public class Appointment_Activity extends AppCompatActivity {
         search_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(search_clear.getVisibility() == View.VISIBLE){
+                    search_clear.setVisibility(View.GONE);
+                }
+                if(search_enter.getVisibility() ==View.GONE){
+                    search_enter.setVisibility(View.VISIBLE);
+                }
                 search_edittext.setText("");
                 search_listview.setAdapter(null);
                 if(LL_date.getVisibility() == View.VISIBLE){
@@ -444,14 +501,17 @@ public class Appointment_Activity extends AppCompatActivity {
             calendar = Calendar.getInstance();
             //calendar.add(Calendar.DATE, -13);
             DATE = mdformat.format(calendar.getTime());
+            SELECTED_DATE = mdformat_db.format(calendar.getTime());
         }
         try {
             date_tv.setText(String.valueOf(DATE));
+            booking_date_tv.setText(String.valueOf(DATE));
+            booking_date_tv.setFocusable(false);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        date_tv.setOnClickListener(new View.OnClickListener() {
+        booking_date_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openDatePickerDialog(view);
@@ -472,7 +532,7 @@ public class Appointment_Activity extends AppCompatActivity {
             LL_booking_screen.setVisibility(View.VISIBLE);
         }
 
-        new AsyncSchedule().execute();
+       // new AsyncSchedule().execute();
 
         patient_name_txt.setFocusable(false);
         patient_id_txt.setFocusable(false);
@@ -480,8 +540,10 @@ public class Appointment_Activity extends AppCompatActivity {
     }
 
     private void OpenScheduleDialog() {
-        if(schedule_dialog != null) {
-            schedule_dialog.show();
+        if(!booking_date_tv.getText().toString().equals("")) {
+            new AsyncSchedule().execute();
+        }else{
+            Toast.makeText(context, "Please select booking date", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -493,6 +555,7 @@ public class Appointment_Activity extends AppCompatActivity {
     };
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
         String str="";
@@ -522,6 +585,13 @@ public class Appointment_Activity extends AppCompatActivity {
 
                 patient_name_txt.setText("");
                 patient_id_txt.setText("");
+                schedule_time_txt.setText("");
+                doctor_note_txt.setText("");
+                DOCTOR_NOTE ="";
+                SCHEDULE_ID = "";
+                booking_date_tv.setText(String.valueOf(DATE));
+                cal = Calendar.getInstance();
+                SELECTED_DATE = mdformat_db.format(cal.getTime());
               //  patient_name_txt.setFocusableInTouchMode(true);
               //  patient_id_txt.setFocusableInTouchMode(true);
                 break;
@@ -551,9 +621,18 @@ public class Appointment_Activity extends AppCompatActivity {
                 patient_name_txt.setText("");
                 patient_id_txt.setText("");
 
-              //  patient_name_txt.setFocusableInTouchMode(true);
-              //  patient_id_txt.setFocusableInTouchMode(true);
+                schedule_time_txt.setText("");
+                doctor_note_txt.setText("");
+                DOCTOR_NOTE ="";
+                SCHEDULE_ID = "";
 
+                booking_date_tv.setText(String.valueOf(DATE));
+
+                cal = Calendar.getInstance();
+                SELECTED_DATE = mdformat_db.format(cal.getTime());
+
+                //  patient_name_txt.setFocusableInTouchMode(true);
+              //  patient_id_txt.setFocusableInTouchMode(true);
                 break;
             default:
                 break;
@@ -567,8 +646,8 @@ public class Appointment_Activity extends AppCompatActivity {
     public void goback() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
         builder.setMessage("Are you sure you want to logout ?")
-                .setTitle("Clinic")
-                .setIcon(R.drawable.ic_launcher_foreground)
+                .setTitle(COMPANY_NAME)
+                .setIcon(R.mipmap.appointment)
                 .setCancelable(false)
                 //.setIcon(R.mipmap.admin)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -593,7 +672,7 @@ public class Appointment_Activity extends AppCompatActivity {
 
         Calendar cal1 = Calendar.getInstance();
         SimpleDateFormat s = new SimpleDateFormat("dd-MM-yyyy");
-        cal1.add(Calendar.DAY_OF_YEAR, -10);
+        //cal1.add(Calendar.DAY_OF_YEAR,0);
         // Date mindate = s.format(new Date(cal1.getTimeInMillis()));
 
 
@@ -602,12 +681,15 @@ public class Appointment_Activity extends AppCompatActivity {
                 (view, year, monthOfYear, dayOfMonth) -> {
                     //String selectedDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
                     String selectedDate =String.format("%02d-%02d-%d", dayOfMonth,(monthOfYear + 1), year);
-                    String selectedDate_db =String.format("%02d-%02d-%d", year,(monthOfYear + 1), dayOfMonth);
-                    date_tv.setText(String.valueOf(selectedDate));
+                    String selectedDate_db =String.format("%d-%02d-%02d", year,(monthOfYear + 1), dayOfMonth);
+
+                    //date_tv.setText(String.valueOf(selectedDate));
+                    booking_date_tv.setText(String.valueOf(selectedDate));
+
                     SELECTED_DATE = selectedDate_db;
                 }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
-        // datePickerDialog.getDatePicker().setMinDate(cal1.getTimeInMillis());
+         datePickerDialog.getDatePicker().setMinDate(cal.getTimeInMillis());
         // datePickerDialog.getDatePicker().setMaxDate(cal.getTimeInMillis());
         datePickerDialog.show();
     }
@@ -663,6 +745,7 @@ public class Appointment_Activity extends AppCompatActivity {
                 mHolder = new ViewHolder();
                 try {
                     mHolder.schedule_tv = (TextView) convertView.findViewById(R.id.schedule_tv);
+                    mHolder.appointment_count_tv = (TextView) convertView.findViewById(R.id.appointment_count_tv);
                 } catch (Exception e) {
                     Log.i("Route ===============>", e.toString());
 
@@ -672,6 +755,7 @@ public class Appointment_Activity extends AppCompatActivity {
                 mHolder = (ViewHolder) convertView.getTag();
             }
             mHolder.schedule_tv.setText(String.valueOf(myList.get(position).getSchedule_name()));
+            mHolder.appointment_count_tv.setText(String.valueOf(myList.get(position).getCount()));
             //convertView.setBackgroundResource(R.drawable.custom_borberless_ripple);
 
             convertView.setOnClickListener(new View.OnClickListener() {
@@ -685,6 +769,7 @@ public class Appointment_Activity extends AppCompatActivity {
                     }
                 }
             });
+
             return convertView;
 
         }
@@ -773,7 +858,9 @@ public class Appointment_Activity extends AppCompatActivity {
                     }
                     search_listview.setAdapter(null);
                     patient_name_txt.setText(String.valueOf(searchList.get(position).getPatient_name()));
-                    patient_id_txt.setText(String.valueOf(searchList.get(position).getPatient_id()));
+                    patient_id_txt.setText(String.valueOf(searchList.get(position).getUhid()));
+
+                    PATIENT_ID = searchList.get(position).getPatient_id();
 
                     patient_name_txt.setFocusable(false);
                     patient_id_txt.setFocusable(false);
@@ -783,6 +870,160 @@ public class Appointment_Activity extends AppCompatActivity {
 
         }
 
+    }
+
+    public class DoctorListAdapter extends BaseAdapter {
+        LayoutInflater inflater;
+        Context context;
+        ArrayList<Doctorlist_Details> list;
+
+        public DoctorListAdapter(Context context, ArrayList<Doctorlist_Details> myList) {
+            this.list = myList;
+            this.context = context;
+            inflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Doctorlist_Details getItem(int position) {
+            return (Doctorlist_Details) list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            if (getCount() > 0) {
+                return getCount();
+            } else {
+                return super.getViewTypeCount();
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
+        @SuppressLint("InflateParams")
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder mHolder;
+
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.doctorlist_card, parent, false);
+                mHolder = new ViewHolder();
+                try {
+                    mHolder.doctor_name_tv = (TextView) convertView.findViewById(R.id.doctor_name_tv);
+
+                } catch (Exception e) {
+                    Log.i("Route ===============>", e.toString());
+
+                }
+                convertView.setTag(mHolder);
+            } else {
+                mHolder = (ViewHolder) convertView.getTag();
+            }
+            mHolder.doctor_name_tv.setText(String.valueOf(list.get(position).getEmployee_name()));
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //list.get(position).getEmployee_id()
+                    doctor_name_txt.setText(String.valueOf(list.get(position).getEmployee_name()));
+                    EMPLOYEE_ID = list.get(position).getEmployee_id();
+                    doctor_dialog.dismiss();
+                }
+            });
+            return convertView;
+
+        }
+
+    }
+
+    //DOCTOR LIST
+    public class AsyncDoctorlist extends
+            AsyncTask<String, JSONObject,Boolean> {
+        JSONObject jsonObj, jsonObj_body,jsonObj_userinfo;
+        JSONArray jsonArray;
+        String message, token;
+        String  success="";
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            //Try Block
+            try {
+                //Make webservice connection and call APi
+
+                RestAPI objRestAPI = new RestAPI();
+                if (isNetworkAvailable()) {
+                    jsonObj = objRestAPI.GetDoctorList(USER_CODE);
+                    message = "";
+                    token = "";
+
+
+                    if(jsonObj!=null) {
+                        jsonObj_body = new JSONObject(jsonObj.getString("body"));
+                    }
+
+                    if(jsonObj_body != null) {
+                        jsonArray = jsonObj_body.getJSONArray("Doctorlist_Array");
+
+                        if(jsonArray != null){
+                            doctorlist_details.clear();
+                            for(int i=0;i<jsonArray.length();i++){
+                                JSONObject json = jsonArray.getJSONObject(i);
+                                //  schedule_details.add(new Schedule_Details(json.getString("schedule_name"),json.getString("schedule_id"),json.getString("active_status")));
+                                doctorlist_details.add(new Doctorlist_Details(json.getString("employee_id"),json.getString("employee_name"),
+                                        json.getString("active_status")));
+                                Log.d("MAIN ACTIVITY ACTIVITY ========(Doctor List Array)====("+String.valueOf(i+1)+")====>", json.toString());
+                            }
+                        }
+                    }
+                }
+            }
+            //Catch Block UserAuth true
+            catch (Exception e) {
+                Log.d("AsyncLoggerService", "Message");
+                Log.d("AsyncLoggerService", e.getMessage());
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(Appointment_Activity.this);
+            progressDialog.setMessage("Loading..."); // Setting Message
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+            progressDialog.show();
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            DoctorPopup();
+            if(progressDialog != null) {
+                progressDialog.hide();
+            }
+            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+            doctorListAdapter = new DoctorListAdapter(getApplicationContext(),doctorlist_details);
+            list_view_doctor.setAdapter(doctorListAdapter);
+            doctorListAdapter.notifyDataSetChanged();
+
+        }
+    }
+
+    private void DoctorPopup() {
+        doctor_dialog.show();
     }
 
 
@@ -801,7 +1042,7 @@ public class Appointment_Activity extends AppCompatActivity {
 
                 RestAPI objRestAPI = new RestAPI();
                 if (isNetworkAvailable()) {
-                    jsonObj = objRestAPI.GetSchedule("");
+                    jsonObj = objRestAPI.GetSchedule(booking_date_tv.getText().toString());
                     message = "";
                     token = "";
 
@@ -817,7 +1058,7 @@ public class Appointment_Activity extends AppCompatActivity {
                             schedule_details.clear();
                              for(int i=0;i<jsonArray.length();i++){
                                  JSONObject json = jsonArray.getJSONObject(i);
-                                 schedule_details.add(new Schedule_Details(json.getString("schedule_name"),json.getString("schedule_id"),json.getString("active_status")));
+                                 schedule_details.add(new Schedule_Details(json.getString("schedule_name"),json.getString("schedule_id"),json.getString("active_status"),json.getString("count")));
                              }
                         }
                     }
@@ -834,12 +1075,15 @@ public class Appointment_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
+
             //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+            if(schedule_dialog != null) {
+                schedule_dialog.show();
+            }
                if(schedule_details != null){
                    scheduleListAdapter = new ScheduleListAdapter(getApplicationContext(),schedule_details);
                    list_view.setAdapter(scheduleListAdapter);
@@ -957,11 +1201,17 @@ public class Appointment_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            progressDialog = new ProgressDialog(Appointment_Activity.this);
+            progressDialog.setMessage("Loading..."); // Setting Message
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+            progressDialog.show();
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
+            if(progressDialog != null) {
+                progressDialog.hide();
+            }
             //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
             if(searchlist_details.size()>0){
 
@@ -988,8 +1238,8 @@ public class Appointment_Activity extends AppCompatActivity {
                 Toast.makeText(context, "No record found", Toast.LENGTH_SHORT).show();
 
             }
-            InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            //InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+           // imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         }
     }
 
@@ -1010,7 +1260,7 @@ public class Appointment_Activity extends AppCompatActivity {
 
                 RestAPI objRestAPI = new RestAPI();
                 if (isNetworkAvailable()) {
-                    jsonObj = objRestAPI.GetSaveBookingJWT(params[0],params[1],params[2],params[3],params[4]);
+                    jsonObj = objRestAPI.GetSaveBookingJWT(params[0],params[1],params[2],params[3],params[4],params[5]);
                     message = "";
                     SAVE_BOOKING_TOKEN = "";
 
@@ -1048,7 +1298,7 @@ public class Appointment_Activity extends AppCompatActivity {
     }
 
 
-    //GET SEARCH LIST
+    //GET SAVE BOOKING
     public class AsyncSaveBooking extends
             AsyncTask<String, JSONObject,Boolean> {
         JSONObject jsonObj, jsonObj_body,jsonObj_userinfo;
@@ -1098,11 +1348,16 @@ public class Appointment_Activity extends AppCompatActivity {
                 schedule_time_txt.setText("");
                 doctor_note_txt.setText("");
                 search_edittext.setText("");
+
+                doctor_name_txt.setText("");
+                booking_date_tv.setText("");
+
                 Toast.makeText(context, "Saved Successfully", Toast.LENGTH_SHORT).show();
             }
 
         }
     }
+
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -1110,7 +1365,7 @@ public class Appointment_Activity extends AppCompatActivity {
     }
 
     private class ViewHolder {
-        TextView schedule_tv,remarks,patient_name_tv,gender_tv,areaname_tv,mobileno_tv;
+        TextView appointment_count_tv,doctor_name_tv,schedule_tv,remarks,patient_name_tv,gender_tv,areaname_tv,mobileno_tv;
         LinearLayout listLL;
         CardView card_view;
     }
@@ -1150,7 +1405,8 @@ public class Appointment_Activity extends AppCompatActivity {
        */
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
         builder.setMessage("Are you sure want to go back ?")
-                .setTitle("Clinic")
+                .setIcon(R.mipmap.appointment)
+                .setTitle(COMPANY_NAME)
               //  .setIcon(R.drawable.ic_launcher_foreground)
                 .setCancelable(false)
                 //.setIcon(R.mipmap.admin)

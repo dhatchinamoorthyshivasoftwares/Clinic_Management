@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Clinic_Management</string>
+    <string name="app_name">Appointments</string>
 
     <string name="font_family_light">sans-serif-light</string>
     <string name="font_family_medium">sans-serif-medium</string>

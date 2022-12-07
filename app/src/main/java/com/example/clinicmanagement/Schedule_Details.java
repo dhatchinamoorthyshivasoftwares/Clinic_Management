@@ -1,12 +1,21 @@
 package com.example.clinicmanagement;
 
 public class Schedule_Details {
-    String schedule_name,schedule_id,active_status;
+    String schedule_name,schedule_id,active_status,count;
 
-    public Schedule_Details(String schedule_name, String schedule_id, String active_status) {
+    public Schedule_Details(String schedule_name, String schedule_id, String active_status,String count) {
         this.schedule_name = schedule_name;
         this.schedule_id = schedule_id;
         this.active_status = active_status;
+        this.count = count;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
     }
 
     public String getSchedule_name() {

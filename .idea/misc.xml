@@ -14,21 +14,27 @@
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.213" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/ic_baseline_backspace_24.xml" value="0.15" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/ic_copy.xml" value="0.1925" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/drawable/ic_delete.xml" value="0.1715" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/drawable/ic_edit.xml" value="0.1715" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/inputtext_background.xml" value="0.2025" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/paswd_disable.xml" value="0.1925" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/search_background.xml" value="0.136" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/time_bg.xml" value="0.156" />
         <entry key="..\:/Clinic_Management/app/src/main/res/drawable/toast_bg.xml" value="0.1925" />
-        <entry key="..\:/Clinic_Management/app/src/main/res/layout/activity_appointment.xml" value="0.33" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/activity_appointment.xml" value="0.25" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/activity_main.xml" value="0.29375" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/bookinglist_card.xml" value="0.33" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/check_internet.xml" value="0.184375" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/content_login.xml" value="0.33" />
-        <entry key="..\:/Clinic_Management/app/src/main/res/layout/content_main.xml" value="0.5" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/content_main.xml" value="0.2" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/doctorlist_card.xml" value="0.1515625" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/edit_popup.xml" value="0.18" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/login_activity.xml" value="0.25" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/schedule_popup.xml" value="0.21" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/schedulelist_card.xml" value="0.25" />
         <entry key="..\:/Clinic_Management/app/src/main/res/layout/searchlist_card.xml" value="0.33" />
-        <entry key="..\:/Clinic_Management/app/src/main/res/layout/splash_screen.xml" value="0.25" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/layout/splash_screen.xml" value="0.18" />
+        <entry key="..\:/Clinic_Management/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.165" />
       </map>
     </option>
   </component>

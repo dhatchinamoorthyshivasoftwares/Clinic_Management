@@ -7,13 +7,11 @@
     android:layout_height="match_parent"
     tools:showIn="@layout/activity_main"
     android:background="#b4d6cd">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#edfcf8"
         android:orientation="vertical">
-
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="55dp"
@@ -56,9 +54,9 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:maxLines="1"
-                    android:text="Clinic Management"
+                    android:text=""
                     android:textColor="@color/white"
-                    android:textSize="19dp"
+                    android:textSize="18dp"
                     android:textStyle="bold">
 
                 </TextView>
@@ -124,7 +122,8 @@
             app:cardElevation="7dp"
             app:cardMaxElevation="9dp"
             app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="false">
+            app:cardUseCompatPadding="false"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -260,6 +259,12 @@
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+            <com.baoyz.swipemenulistview.SwipeMenuListView
+                android:id="@+id/booking_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:divider="@null"/>
     </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -587,4 +592,5 @@
         android:gravity="center"
         app:backgroundTint="#2a8577"
         app:srcCompat="@drawable/ic_baseline_add_24" />
+
 </RelativeLayout>

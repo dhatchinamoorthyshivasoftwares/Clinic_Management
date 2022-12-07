@@ -1,7 +1,13 @@
 package com.example.clinicmanagement;
 
+import static com.example.clinicmanagement.Splash_Screen.COMPANY_NAME;
+
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.net.ConnectivityManager;
@@ -24,6 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -72,11 +79,15 @@ public class Login_Activity extends AppCompatActivity {
         point_3 =(View) findViewById(R.id.point_3);
         point_4 =(View) findViewById(R.id.point_4);
 
-        user_name_tv  =(TextView) findViewById(R.id.user_name_tv);
+        user_name_tv  = (TextView) findViewById(R.id.user_name_tv);
 
-        company_name_tv  =(TextView) findViewById(R.id.company_name_tv);
+        company_name_tv  = (TextView) findViewById(R.id.company_name);
 
 
+
+        if(!COMPANY_NAME.equals("")){
+            company_name_tv.setText(String.valueOf(COMPANY_NAME));
+        }
 
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -429,7 +440,28 @@ public class Login_Activity extends AppCompatActivity {
                     ACTIVE_STATUS = "0";
                 }
                 if(success.equals("Invalid device id")){
-                    Toast.makeText(context, "Invalid device id", Toast.LENGTH_SHORT).show();
+
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context,R.style.AlertDialogStyle);
+                    builder.setMessage("Please contact system administrator with this [ "+ getdeviceid +" ] device id")
+                            .setTitle("Access Denied")
+                            .setCancelable(false)
+                            .setPositiveButton("Copy", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    ClipboardManager myClipboard;
+                                    myClipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+                                    ClipData myClip;
+                                    //String text = "hello world";
+                                    myClip = ClipData.newPlainText("Device ID", getdeviceid);
+                                    myClipboard.setPrimaryClip(myClip);
+                                    Toast.makeText(getApplicationContext(),"Device ID Copied to ClipBoard",Toast.LENGTH_SHORT).show();
+                                    //.setIcon(R.mipmap.admin)
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    Toast.makeText(getApplicationContext(), "You are not authorized to use this application. Please contact admin with device ID", Toast.LENGTH_SHORT).show();
+
+                   // Toast.makeText(context, "Invalid device id", Toast.LENGTH_SHORT).show();
                 }
 
             if(!USER_NAME.equals("")){
@@ -647,6 +679,7 @@ public class Login_Activity extends AppCompatActivity {
 
         }
     }
+
 
     private void call() {
         //tv_1.setText("");

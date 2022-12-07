@@ -22,6 +22,15 @@
             android:orientation="vertical"
             android:layout_height="0dp"
             android:layout_marginBottom="40dp">
+            <ImageView
+                android:layout_gravity="center"
+                android:id="@+id/natarajan_logo"
+                android:layout_width="180dp"
+                android:layout_height="90dp"
+                android:layout_marginBottom="45dp"
+                android:background="@drawable/trio_s_logo_final"
+                tools:ignore="MissingConstraints">
+            </ImageView>
             <TextView
                 android:id="@+id/company_name"
                 android:layout_width="match_parent"
@@ -33,7 +42,7 @@
                 android:layout_gravity="top"
                 android:textColor="#414445"
                 android:fontFamily="@string/font_family_medium"
-                android:text="MSR Clinic Management"
+                android:text=""
                 android:textStyle="bold"
                 android:visibility="visible">
             </TextView>
@@ -74,16 +83,16 @@
                 android:fontFamily="@string/font_family_medium"
                 android:text="  Powered By "
                 android:textStyle="bold"
-                android:visibility="visible">
+                android:visibility="gone">
             </TextView>
 
                 <ImageView
                     android:layout_gravity="center"
-                    android:id="@+id/natarajan_logo"
                     android:layout_width="110dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="35dp"
                     android:background="@drawable/trio_s_logo_final"
+                    android:visibility="gone"
                     tools:ignore="MissingConstraints">
                 </ImageView>
 
