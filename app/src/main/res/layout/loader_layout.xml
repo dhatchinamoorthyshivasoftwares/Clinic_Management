@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="150dp"
+    android:layout_height="140dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="6dp"
+    app:cardMaxElevation="8dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="false"
+    android:layout_gravity="center"
+    android:gravity="center">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:weightSum="2">
+           <pl.droidsonroids.gif.GifImageView
+               android:id="@+id/loader_imageview"
+               android:layout_width="match_parent"
+               android:layout_height="33dp"
+               android:layout_marginBottom="5dp"
+               android:layout_gravity="center">
+
+           </pl.droidsonroids.gif.GifImageView>
+        <TextView
+            android:id="@+id/areaname_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:fontFamily="sans-serif-condensed-light"
+            android:padding="3dp"
+            android:layout_marginBottom="10dp"
+            android:text="Loading ..."
+            android:gravity="center"
+            android:textColor="#48539c"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:ignore="NestedWeights" />
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

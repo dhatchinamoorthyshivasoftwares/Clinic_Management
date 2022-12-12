@@ -27,9 +27,13 @@ public class RestAPI {
     // public  static  String neturl = "";
     // public  static  String neturl = "";
 
-    public  static  String urlString= "http://172.16.1.151:8080/api/mobileapi";
-    public  static  String neturl = "http://172.16.1.151:8080/";
+    //TEST
+//    public  static  String urlString= "http://172.16.1.151:8080/api/mobileapi";
+//    public  static  String neturl = "http://172.16.1.151:8080/";
 
+    //LIVE
+    public  static  String urlString= "https://hmsapi.trio-S.com/api/mobileapi";
+    public  static  String neturl = "https://hmsapi.trio-S.com/";
 
     public String GetJSONResponse(String paraURL, String paraData) {
         BufferedReader reader = null;
@@ -308,7 +312,7 @@ public class RestAPI {
         JSONObject myResponse = null;
 
         URL url = new URL(Url); //Enter URL here
-        String json = "{\"search_Value\": \""+search_Value.toLowerCase()+"\",\"search_Type\":\""+search_Type+"\",\"from_Date\":\""+from_Date+"\",\"to_Date\":\""+to_Date+"\"}";
+        String json = "{\"search_Value\": \""+search_Value+"\",\"search_Type\":\""+search_Type+"\",\"from_Date\":\""+from_Date+"\",\"to_Date\":\""+to_Date+"\"}";
         //Log.e("", "JSON_URL=========>" + json);
         //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();

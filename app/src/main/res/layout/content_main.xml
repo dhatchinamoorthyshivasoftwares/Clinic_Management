@@ -7,11 +7,13 @@
     android:layout_height="match_parent"
     tools:showIn="@layout/activity_main"
     android:background="#b4d6cd">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#edfcf8"
         android:orientation="vertical">
+
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="55dp"
@@ -100,172 +102,181 @@
 
 
         <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="0dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="2">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/collection_cv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="0dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="7dp"
-            app:cardElevation="7dp"
-            app:cardMaxElevation="9dp"
-            app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="false"
-            android:visibility="gone">
+            android:layout_marginEnd="0dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="5dp"
-                android:weightSum="0">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="0dp"
-                    android:weightSum="2">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-condensed-light"
-                        android:gravity="start"
-                        android:padding="1dp"
-                        android:text="Mari Muthu"
-                        android:textColor="#636363"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        tools:ignore="NestedWeights" />
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-condensed-light"
-                        android:gravity="end"
-                        android:padding="1dp"
-                        android:text="Dr.Jhonson"
-                        android:textColor="#3a74ab"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        tools:ignore="NestedWeights" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:gravity="start"
-                    android:orientation="horizontal"
-                    android:padding="0dp"
-                    android:weightSum="2">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="1dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-condensed-light"
-                        android:gravity="start"
-                        android:padding="0dp"
-                        android:text="Madurai"
-                        android:textColor="#8b8c8c"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:ignore="NestedWeights" />
-                </LinearLayout>
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="7dp"
+                app:cardElevation="7dp"
+                app:cardMaxElevation="9dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="false">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="0dp"
-                    android:weightSum="2">
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    android:weightSum="0">
+
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp"
-                        android:layout_weight="1"
-                        android:gravity="start"
+                        android:gravity="center"
                         android:orientation="horizontal"
-                        android:padding="0dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:fontFamily="sans-serif-condensed-light"
-                        android:gravity="start"
-                        android:padding="1dp"
-                        android:text="UHID"
-                        android:textColor="#636363"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        tools:ignore="NestedWeights" />
+                        android:padding="0dp"
+                        android:weightSum="2">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:fontFamily="sans-serif-condensed-light"
                             android:gravity="start"
                             android:padding="1dp"
-                            android:text="76001"
+                            android:text="Mari Muthu"
                             android:textColor="#636363"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             tools:ignore="NestedWeights" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginTop="0dp"
-                        android:gravity="end"
-                        android:orientation="horizontal"
-                        android:padding="0dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0"
-                            android:fontFamily="sans-serif-condensed-light"
-                            android:gravity="center"
-                            android:paddingRight="4dp"
-                            android:paddingLeft="4dp"
-                            android:text="10:30 AM"
-                            android:background="@drawable/time_bg"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
 
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-condensed-light"
+                            android:gravity="end"
+                            android:padding="1dp"
+                            android:text="Dr.Jhonson"
+                            android:textColor="#3a74ab"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
                             tools:ignore="NestedWeights" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:gravity="start"
+                        android:orientation="horizontal"
+                        android:padding="0dp"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="1dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-condensed-light"
+                            android:gravity="start"
+                            android:padding="0dp"
+                            android:text="Madurai"
+                            android:textColor="#8b8c8c"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:ignore="NestedWeights" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="0dp"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:orientation="horizontal"
+                            android:padding="0dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:fontFamily="sans-serif-condensed-light"
+                                android:gravity="start"
+                                android:padding="1dp"
+                                android:text="UHID"
+                                android:textColor="#636363"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                tools:ignore="NestedWeights" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:fontFamily="sans-serif-condensed-light"
+                                android:gravity="start"
+                                android:padding="1dp"
+                                android:text="76001"
+                                android:textColor="#636363"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                tools:ignore="NestedWeights" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:orientation="horizontal"
+                            android:padding="0dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:background="@drawable/time_bg"
+                                android:fontFamily="sans-serif-condensed-light"
+                                android:gravity="center"
+                                android:paddingLeft="4dp"
+                                android:paddingRight="4dp"
+                                android:text="10:30 AM"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+
+                                tools:ignore="NestedWeights" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
+
             <com.baoyz.swipemenulistview.SwipeMenuListView
                 android:id="@+id/booking_listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:divider="@null"/>
-    </LinearLayout>
+                android:divider="@null"
+                android:scrollbars="none" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -300,6 +311,7 @@
                     android:orientation="vertical"
                     android:padding="5dp"
                     android:weightSum="0">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -308,26 +320,29 @@
                         android:orientation="horizontal"
                         android:padding="0dp"
                         android:weightSum="2">
+
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="0dp"
+                            android:layout_weight="1"
                             android:gravity="start"
                             android:orientation="horizontal"
-                            android:padding="0dp"
-                            android:layout_weight="1">
-                        <TextView
-                            android:layout_width="50dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0"
-                            android:fontFamily="sans-serif-condensed-light"
-                            android:gravity="start"
-                            android:padding="2dp"
-                            android:text="Name "
-                            android:textColor="@color/common_txt_color"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            tools:ignore="NestedWeights" />
+                            android:padding="0dp">
+
+                            <TextView
+                                android:layout_width="50dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0"
+                                android:fontFamily="sans-serif-condensed-light"
+                                android:gravity="start"
+                                android:padding="2dp"
+                                android:text="Name "
+                                android:textColor="@color/common_txt_color"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                tools:ignore="NestedWeights" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -341,14 +356,16 @@
                                 android:textStyle="bold"
                                 tools:ignore="NestedWeights" />
                         </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="0dp"
+                            android:layout_weight="1"
                             android:gravity="end"
                             android:orientation="horizontal"
-                            android:padding="0dp"
-                            android:layout_weight="1">
+                            android:padding="0dp">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -361,6 +378,7 @@
                                 android:textSize="15sp"
                                 android:textStyle="bold"
                                 tools:ignore="NestedWeights" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -375,6 +393,7 @@
                                 tools:ignore="NestedWeights" />
                         </LinearLayout>
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -383,14 +402,16 @@
                         android:orientation="horizontal"
                         android:padding="0dp"
                         android:weightSum="2">
+
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="0dp"
+                            android:layout_weight="1"
                             android:gravity="start"
                             android:orientation="horizontal"
-                            android:padding="0dp"
-                            android:layout_weight="1">
+                            android:padding="0dp">
+
                             <TextView
                                 android:layout_width="50dp"
                                 android:layout_height="wrap_content"
@@ -403,6 +424,7 @@
                                 android:textSize="15sp"
                                 android:textStyle="bold"
                                 tools:ignore="NestedWeights" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -416,23 +438,25 @@
                                 android:textStyle="bold"
                                 tools:ignore="NestedWeights" />
                         </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:layout_marginTop="0dp"
+                            android:layout_weight="1"
                             android:gravity="end"
                             android:orientation="horizontal"
                             android:padding="0dp">
+
                             <TextView
                                 android:layout_width="50dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0"
+                                android:background="@drawable/time_bg"
                                 android:fontFamily="sans-serif-condensed-light"
                                 android:gravity="center"
                                 android:padding="2dp"
                                 android:text="10:30"
-                                android:background="@drawable/time_bg"
                                 android:textColor="@color/white"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
@@ -442,6 +466,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="120dp"
@@ -510,6 +535,20 @@
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/no_record_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:visibility="gone"
+            android:fontFamily="sans-serif-condensed-light"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="No appointments today"
+            android:textColor="@color/common_txt_color"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:ignore="NestedWeights" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -215,19 +215,24 @@ public class Splash_Screen extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result) {
 
-            if(!COMPANY_NAME.equals("")) {
-                tv_company_name.setText(String.valueOf(COMPANY_NAME));
-                //Toast.makeText(Login_Activity.this, String.valueOf(codeString), Toast.LENGTH_SHORT).show();
-            }
+            try {
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent i=new Intent(Splash_Screen.this,Login_Activity.class);
-                    startActivity(i);
-                    finish();
+                if (!COMPANY_NAME.equals("")) {
+                    tv_company_name.setText(String.valueOf(COMPANY_NAME));
+                    //Toast.makeText(Login_Activity.this, String.valueOf(codeString), Toast.LENGTH_SHORT).show();
                 }
-            }, SPLASH_SCREEN_TIME_OUT);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent i = new Intent(Splash_Screen.this, Login_Activity.class);
+                        startActivity(i);
+                        finish();
+                    }
+                }, SPLASH_SCREEN_TIME_OUT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

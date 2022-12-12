@@ -62,6 +62,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import pl.droidsonroids.gif.GifImageView;
+
 
 public class Appointment_Activity extends AppCompatActivity {
     String DATE ="";
@@ -80,7 +82,8 @@ public class Appointment_Activity extends AppCompatActivity {
     Calendar calendar1;
     ArrayList<String> schedule_time = new ArrayList<>();
     ArrayAdapter spin_adapter;
-    Dialog schedule_dialog,doctor_dialog;
+    GifImageView loader_imageview;
+    Dialog schedule_dialog,doctor_dialog,loader_dialog;
     Context context;
     ListView list_view,search_listview,list_view_doctor;
     ScheduleListAdapter scheduleListAdapter;
@@ -153,6 +156,7 @@ public class Appointment_Activity extends AppCompatActivity {
         doctor_name_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                doctor_name_txt.setError(null);
                 new AsyncDoctorlist().execute();
             }
         }) ;
@@ -163,7 +167,7 @@ public class Appointment_Activity extends AppCompatActivity {
             }
         });
 
-       /* doctor_note_txt.setOnTouchListener(new View.OnTouchListener() {
+              /* doctor_note_txt.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
@@ -184,15 +188,26 @@ public class Appointment_Activity extends AppCompatActivity {
                 //PATIENT_ID = patient_id_txt.getText().toString();
                 DOCTOR_NOTE = doctor_note_txt.getText().toString();
 
-              /* if(PATIENT_NAME.equals("")){
-                    patient_name_txt.setError("Please enter patient name");
-                }
+              //               if(PATIENT_NAME.equals("")){
+//                    patient_name_txt.setError("Please enter patient name");
+//                }
+//                if(PATIENT_ID.equals("")){
+//                    patient_id_txt.setError("Please enter patient id");
+//                }
                 if(PATIENT_ID.equals("")){
-                    patient_id_txt.setError("Please enter patient id");
+                    patient_id_txt.setError("Select patient id");
+                }
+                if(PATIENT_NAME.equals("")){
+
+                    patient_name_txt.setError("Select patient name");
                 }
                 if(SCHEDULE_ID.equals("")){
                     schedule_time_txt.setError("Select schedule time");
-                }*/
+                }
+                if(EMPLOYEE_ID.equals("")){
+                    doctor_name_txt.setError("Select doctor");
+                }
+
                 if(!PATIENT_NAME.equals("") &&  !PATIENT_ID.equals("") && !SCHEDULE_ID.equals("") && !EMPLOYEE_ID.equals("")){
                     new AsyncSaveBookingJwt().execute(PATIENT_ID,USER_ID,SCHEDULE_ID,DOCTOR_NOTE,SELECTED_DATE,EMPLOYEE_ID);
                 }
@@ -251,6 +266,7 @@ public class Appointment_Activity extends AppCompatActivity {
         schedule_time.add("07:00");schedule_time.add("07:30");
         schedule_time.add("08:00");schedule_time.add("08:30");
         schedule_time.add("09:00");
+
         /*schedule_time.add("09:30");
         schedule_time.add("10:00");schedule_time.add("10:30");
         schedule_time.add("11:00");schedule_time.add("11:30");
@@ -360,9 +376,10 @@ public class Appointment_Activity extends AppCompatActivity {
         schedule_time_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-           //     if(!booking_date_tv.getText().toString().equals("")) {
+                schedule_time_txt.setError(null);
+             //     if(!booking_date_tv.getText().toString().equals("")) {
                     OpenScheduleDialog();
-//                }else{
+             //                }else{
 //                    Toast.makeText(context, "Please select booking date", Toast.LENGTH_SHORT).show();
 //                }
             }
@@ -403,7 +420,7 @@ public class Appointment_Activity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(editable.length()>0) {
-//                        if (LL_search_list.getVisibility() == View.GONE) {
+               //                        if (LL_search_list.getVisibility() == View.GONE) {
 //                            LL_search_list.setVisibility(View.VISIBLE);
 //                        }
 //
@@ -436,12 +453,17 @@ public class Appointment_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                String SEARCH_VALUE ="";
+
                 if(LL_date.getVisibility() == View.VISIBLE){
                     LL_date.setVisibility(View.GONE);
                 }
 
                 if(search_edittext != null) {
                     if (search_edittext.getText().toString().length() >=3) {
+                        patient_id_txt.setError(null);
+                        patient_name_txt.setError(null);
+
                         if(search_clear.getVisibility() == View.GONE){
                             search_clear.setVisibility(View.VISIBLE);
                         }
@@ -449,7 +471,8 @@ public class Appointment_Activity extends AppCompatActivity {
                             search_enter.setVisibility(View.GONE);
                         }
 
-                        new AsyncGetPatientsJwt().execute(search_edittext.getText().toString(),"1","","");
+                        new AsyncGetPatientsJwt().execute(search_edittext.getText().toString().toLowerCase(),"1","","");
+
                     }else{
                         Toast.makeText(context, "Please enter minimum three character", Toast.LENGTH_SHORT).show();
 
@@ -463,6 +486,7 @@ public class Appointment_Activity extends AppCompatActivity {
                             LL_booking_screen.setVisibility(View.VISIBLE);
                         }
                     }
+
                 }
 
             }
@@ -536,7 +560,6 @@ public class Appointment_Activity extends AppCompatActivity {
 
         patient_name_txt.setFocusable(false);
         patient_id_txt.setFocusable(false);
-
     }
 
     private void OpenScheduleDialog() {
@@ -592,7 +615,7 @@ public class Appointment_Activity extends AppCompatActivity {
                 booking_date_tv.setText(String.valueOf(DATE));
                 cal = Calendar.getInstance();
                 SELECTED_DATE = mdformat_db.format(cal.getTime());
-              //  patient_name_txt.setFocusableInTouchMode(true);
+                //  patient_name_txt.setFocusableInTouchMode(true);
               //  patient_id_txt.setFocusableInTouchMode(true);
                 break;
             case R.id.rdb_date:
@@ -632,13 +655,13 @@ public class Appointment_Activity extends AppCompatActivity {
                 SELECTED_DATE = mdformat_db.format(cal.getTime());
 
                 //  patient_name_txt.setFocusableInTouchMode(true);
-              //  patient_id_txt.setFocusableInTouchMode(true);
+                //  patient_id_txt.setFocusableInTouchMode(true);
                 break;
             default:
                 break;
 
         }
-     //   Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
         Log.d("APPOINTMENT ACTIVITY ====(OPTION SELECTION)====>",str);
 
     }
@@ -666,6 +689,7 @@ public class Appointment_Activity extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
 
     public void openDatePickerDialog(final View v) {
         Calendar cal = Calendar.getInstance();
@@ -755,8 +779,15 @@ public class Appointment_Activity extends AppCompatActivity {
                 mHolder = (ViewHolder) convertView.getTag();
             }
             mHolder.schedule_tv.setText(String.valueOf(myList.get(position).getSchedule_name()));
-            mHolder.appointment_count_tv.setText(String.valueOf(myList.get(position).getCount()));
-            //convertView.setBackgroundResource(R.drawable.custom_borberless_ripple);
+            try{
+                if(!myList.get(position).getCount().equals("0")){
+                    mHolder.appointment_count_tv.setText(String.valueOf(myList.get(position).getCount()));
+                    //convertView.setBackgroundResource(R.drawable.custom_borberless_ripple);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -867,10 +898,10 @@ public class Appointment_Activity extends AppCompatActivity {
                 }
             });
             return convertView;
-
         }
 
     }
+
 
     public class DoctorListAdapter extends BaseAdapter {
         LayoutInflater inflater;
@@ -1001,31 +1032,50 @@ public class Appointment_Activity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = new ProgressDialog(Appointment_Activity.this);
-            progressDialog.setMessage("Loading..."); // Setting Message
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
-            progressDialog.show();
+//            progressDialog = new ProgressDialog(Appointment_Activity.this);
+//            progressDialog.setMessage("Loading..."); // Setting Message
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+//            progressDialog.show();
+
+            loader_dialog = new Dialog(context);
+            loader_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            loader_dialog.setContentView(R.layout.loader_layout);
+            loader_imageview  = (GifImageView) loader_dialog.findViewById(R.id.loader_imageview);
+            loader_dialog.show();
+            loader_imageview.setBackgroundResource(R.drawable.heart_beat);
 
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
-            DoctorPopup();
-            if(progressDialog != null) {
-                progressDialog.hide();
-            }
-            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
-            doctorListAdapter = new DoctorListAdapter(getApplicationContext(),doctorlist_details);
-            list_view_doctor.setAdapter(doctorListAdapter);
-            doctorListAdapter.notifyDataSetChanged();
 
+//            if(progressDialog != null) {
+//                progressDialog.hide();
+//            }
+            try{
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loader_dialog.hide();
+
+                    //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+                    doctorListAdapter = new DoctorListAdapter(getApplicationContext(),doctorlist_details);
+                    list_view_doctor.setAdapter(doctorListAdapter);
+                    doctorListAdapter.notifyDataSetChanged();
+
+                    DoctorPopup();
+                }
+            }, 1000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
+
 
     private void DoctorPopup() {
         doctor_dialog.show();
     }
-
 
     public class AsyncSchedule extends
             AsyncTask<String, JSONObject,Boolean> {
@@ -1074,21 +1124,36 @@ public class Appointment_Activity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
+            loader_dialog = new Dialog(context);
+            loader_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            loader_dialog.setContentView(R.layout.loader_layout);
+            loader_imageview  = (GifImageView) loader_dialog.findViewById(R.id.loader_imageview);
+            loader_dialog.show();
+            loader_imageview.setBackgroundResource(R.drawable.heart_beat);
+
             super.onPreExecute();
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
 
-            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
-            if(schedule_dialog != null) {
-                schedule_dialog.show();
-            }
-               if(schedule_details != null){
-                   scheduleListAdapter = new ScheduleListAdapter(getApplicationContext(),schedule_details);
-                   list_view.setAdapter(scheduleListAdapter);
-                   scheduleListAdapter.notifyDataSetChanged();
-               }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loader_dialog.hide();
+
+                    //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+                    if(schedule_dialog != null) {
+                        schedule_dialog.show();
+                    }
+                    if(schedule_details != null){
+                        scheduleListAdapter = new ScheduleListAdapter(getApplicationContext(),schedule_details);
+                        list_view.setAdapter(scheduleListAdapter);
+                        scheduleListAdapter.notifyDataSetChanged();
+                    }
+                }
+            },1000);
+
 
         }
     }
@@ -1201,17 +1266,30 @@ public class Appointment_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(Appointment_Activity.this);
-            progressDialog.setMessage("Loading..."); // Setting Message
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
-            progressDialog.show();
+//            progressDialog = new ProgressDialog(Appointment_Activity.this);
+//            progressDialog.setMessage("Loading..."); // Setting Message
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+//            progressDialog.show();
+            loader_dialog = new Dialog(context);
+            loader_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            loader_dialog.setContentView(R.layout.loader_layout);
+            loader_imageview  = (GifImageView) loader_dialog.findViewById(R.id.loader_imageview);
+            loader_dialog.show();
+            loader_imageview.setBackgroundResource(R.drawable.heart_beat);
+
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if(progressDialog != null) {
-                progressDialog.hide();
-            }
+//            if(progressDialog != null) {
+//                progressDialog.hide();
+//            }
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+            loader_dialog.hide();
             //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
             if(searchlist_details.size()>0){
 
@@ -1240,9 +1318,10 @@ public class Appointment_Activity extends AppCompatActivity {
             }
             //InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
            // imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                }
+            }, 1000);
         }
     }
-
 
     //GET saveBookingJwt
     public class AsyncSaveBookingJwt extends
@@ -1296,7 +1375,6 @@ public class Appointment_Activity extends AppCompatActivity {
             }
         }
     }
-
 
     //GET SAVE BOOKING
     public class AsyncSaveBooking extends
@@ -1352,7 +1430,15 @@ public class Appointment_Activity extends AppCompatActivity {
                 doctor_name_txt.setText("");
                 booking_date_tv.setText("");
 
+                if(search_clear.getVisibility() == View.VISIBLE){
+                    search_clear.setVisibility(View.GONE);
+                }
+                if(search_enter.getVisibility() ==View.GONE){
+                    search_enter.setVisibility(View.VISIBLE);
+                }
+
                 Toast.makeText(context, "Saved Successfully", Toast.LENGTH_SHORT).show();
+
             }
 
         }
@@ -1373,12 +1459,12 @@ public class Appointment_Activity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-      //  if(LL_top.getVisibility() ==View.GONE){
+         //  if(LL_top.getVisibility() ==View.GONE){
      //       LL_top.setVisibility(View.VISIBLE);
       //  }
         Go_Back();
-      //  super.onBackPressed();
-     /*   if (doubleBackToExitPressedOnce) {
+         //  super.onBackPressed();
+         /*   if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             return;
         }
@@ -1399,7 +1485,7 @@ public class Appointment_Activity extends AppCompatActivity {
     }
 
     public void Go_Back() {
-       /* Intent i=new Intent(Appointment_Activity.this,MainActivity.class);
+        /* Intent i=new Intent(Appointment_Activity.this,MainActivity.class);
         Appointment_Activity.this.finish();
         startActivity(i);
        */
@@ -1425,4 +1511,5 @@ public class Appointment_Activity extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
 }

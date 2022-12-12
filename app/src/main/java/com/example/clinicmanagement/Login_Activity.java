@@ -476,6 +476,7 @@ public class Login_Activity extends AppCompatActivity {
         }
     }
 
+
     public class AsyncLogin extends
             AsyncTask<String, JSONObject,Boolean> {
         JSONObject jsonObj,json_body,json_token;
@@ -517,95 +518,14 @@ public class Login_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             if(codeString != null) {
-               // Toast.makeText(Login_Activity.this, String.valueOf(LOGIN_TOKEN), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(Login_Activity.this, String.valueOf(LOGIN_TOKEN), Toast.LENGTH_SHORT).show();
 
                 if(isNetworkAvailable()) {
                     //API Login Validation
-                  /*  if (codeString.length() == MAX_LENGHT) {
-
-                        if (codeString.equals("1234") ) {
-
-                            Intent i = new Intent(Login_Activity.this, MainActivity.class);
-                            Login_Activity.this.finish();
-                            startActivity(i);
-
-                            Log.d("CODE STRING =============>",codeString);
-                        } else {
-                            point_1.setVisibility(View.GONE);
-                            point_2.setVisibility(View.GONE);
-                            point_3.setVisibility(View.GONE);
-                            point_4.setVisibility(View.GONE);
-                            codeString = "";
-
-                            //  Toast.makeText(context, "invalid passcode", Toast.LENGTH_SHORT).show();
-                            toast("Invalid PIN");
-                            Log.d("CODE STRING =============>",codeString);
-                        }
-                    }else{
-                        toast("Please enter 4 digit PIN");
-                        codeString = "";
-                        setDotImagesState();
-                    }*/
 
                     new AsyncLoginFinal().execute();
                 }
             }
-
-            /*if (jsonObj == null || jsonObj.equals("")) {
-                Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
-            } else {
-                JSONObject objJson = jsonObj;
-                try {
-                    int success = jsonObj.getInt("success");
-
-
-                    if (success == 0) {
-                        codeString=removeAllChar(codeString);
-                        setDotImagesState();
-                        Toast.makeText(context, "Invaild Password", Toast.LENGTH_SHORT).show();
-                        //dot_4.setBackgroundResource(R.drawable.paswd_disable);
-
-                    } else if (success == 1) {
-                        details = jsonObj.getJSONArray("logindetails");
-                        if (details.length() > 0) {
-                            JSONObject json = details.getJSONObject(0);
-                            if (json.getString("agent").equals("null")) {
-                                Toast.makeText(context, "Incorrect login id or password", Toast.LENGTH_SHORT).show();
-
-                            } else {
-
-                                //usercode = json.getString("code");
-                               // username = json.getString("agent");
-
-
-
-                                // Toast.makeText(context, "Welcome " + json.getString("username") + " !", Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(Login_Activity.this,MainActivity.class);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                i.putExtra("username",json.getString("username"));
-                                startActivity(i);
-                                // toast("Welcome " + json.getString("username") +" !");
-                            }
-                        }
-                    } else if (success == 3) {
-                        Toast.makeText(context, "Your account is inactive. Please contact admin.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, "Please enter valid emp id and Pwd", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    Log.d("Login", e.getMessage());
-                    String getfunname = new Object() {
-                    }.getClass().getEnclosingMethod().getName();
-                    networkstate = isNetworkAvailable();
-                    if (networkstate == true) {
-                       // new AsyncLoggerService().execute("Android : " + LOGTAG, getfunname, e.toString());
-                    }
-                }
-            }*/
-
         }
     }
 
@@ -679,7 +599,6 @@ public class Login_Activity extends AppCompatActivity {
 
         }
     }
-
 
     private void call() {
         //tv_1.setText("");
@@ -821,8 +740,6 @@ public class Login_Activity extends AppCompatActivity {
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.show();
     }
-
-
 
 }
 
