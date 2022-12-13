@@ -28,8 +28,8 @@ public class RestAPI {
     // public  static  String neturl = "";
 
     //TEST
-//    public  static  String urlString= "http://172.16.1.151:8080/api/mobileapi";
-//    public  static  String neturl = "http://172.16.1.151:8080/";
+  //  public  static  String urlString= "http://172.16.1.151:8080/api/mobileapi";
+  //  public  static  String neturl = "http://172.16.1.151:8080/";
 
     //LIVE
     public  static  String urlString= "https://hmsapi.trio-S.com/api/mobileapi";

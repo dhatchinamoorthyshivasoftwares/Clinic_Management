@@ -953,7 +953,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
         builder.setMessage("Are you sure you want to exit ?")
                 .setTitle("Clinic")
-                .setIcon(R.drawable.ic_launcher_foreground)
+                .setIcon(R.mipmap.appointment)
                 .setCancelable(false)
                 //.setIcon(R.mipmap.admin)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {

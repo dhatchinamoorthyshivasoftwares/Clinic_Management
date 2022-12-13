@@ -44,7 +44,7 @@ public class Login_Activity extends AppCompatActivity {
     Context context;
     ImageView btn_back;
     private String codeString = "";
-    public  static  String getdeviceid="",USER_ID="",USER_CODE="",USER_NAME="",ACTIVE_STATUS="",LOGIN_TOKEN="";
+    public  static  String getdeviceid="",USER_ID="",USER_CODE="",USER_NAME="",ACTIVE_STATUS="",LOGIN_TOKEN="",EMPLOYEE_ID ="",EMPLOYEE_NAME ="";
     private static final int MAX_LENGHT = 4;
 
     @Override
@@ -434,6 +434,8 @@ public class Login_Activity extends AppCompatActivity {
                         USER_NAME = jsonObj_userinfo.getString("username");
                         USER_ID  = jsonObj_userinfo.getString("user_id");
 
+                        EMPLOYEE_ID = jsonObj_userinfo.getString("employee_id");
+                        EMPLOYEE_NAME = jsonObj_userinfo.getString("employee_name");
                 }
                 if(success.equals("unsuccess")){
                     Toast.makeText(context, "Inactive User", Toast.LENGTH_SHORT).show();
@@ -464,8 +466,8 @@ public class Login_Activity extends AppCompatActivity {
                    // Toast.makeText(context, "Invalid device id", Toast.LENGTH_SHORT).show();
                 }
 
-            if(!USER_NAME.equals("")){
-                user_name_tv.setText(String.valueOf(USER_NAME));
+            if(!EMPLOYEE_NAME.equals("")){
+                user_name_tv.setText(String.valueOf(EMPLOYEE_NAME));
                // Toast.makeText(context, "NAME : "+USER_NAME+"  CODE : "+USER_CODE, Toast.LENGTH_SHORT).show();
                 Log.d("LOGIN ACTIVITY ========(DEVICE CHECK)========>", "NAME : "+USER_NAME+"  CODE : "+USER_CODE);
             }

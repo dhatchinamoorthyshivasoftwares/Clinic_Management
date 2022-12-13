@@ -1437,8 +1437,17 @@ public class Appointment_Activity extends AppCompatActivity {
                     search_enter.setVisibility(View.VISIBLE);
                 }
 
+
                 Toast.makeText(context, "Saved Successfully", Toast.LENGTH_SHORT).show();
 
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent i = new Intent(Appointment_Activity.this, MainActivity.class);
+                        Appointment_Activity.this.finish();
+                        startActivity(i);
+                    }
+                },400);
             }
 
         }
@@ -1484,32 +1493,38 @@ public class Appointment_Activity extends AppCompatActivity {
         if (mHandler != null) { mHandler.removeCallbacks(mRunnable); }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(loader_dialog != null) {
+            loader_dialog.dismiss();
+        }
+    }
+
     public void Go_Back() {
-        /* Intent i=new Intent(Appointment_Activity.this,MainActivity.class);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
+//        builder.setMessage("Are you sure want to go back ?")
+//                .setIcon(R.mipmap.appointment)
+//                .setTitle(COMPANY_NAME)
+//              //  .setIcon(R.drawable.ic_launcher_foreground)
+//                .setCancelable(false)
+//                //.setIcon(R.mipmap.admin)
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//
+//                    }
+//                })
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.cancel();
+//                    }
+//                });
+//        AlertDialog alert = builder.create();
+//        alert.show();
+
+        Intent i=new Intent(Appointment_Activity.this,MainActivity.class);
         Appointment_Activity.this.finish();
         startActivity(i);
-       */
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
-        builder.setMessage("Are you sure want to go back ?")
-                .setIcon(R.mipmap.appointment)
-                .setTitle(COMPANY_NAME)
-              //  .setIcon(R.drawable.ic_launcher_foreground)
-                .setCancelable(false)
-                //.setIcon(R.mipmap.admin)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent i=new Intent(Appointment_Activity.this,MainActivity.class);
-                        Appointment_Activity.this.finish();
-                        startActivity(i);
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 
 }
