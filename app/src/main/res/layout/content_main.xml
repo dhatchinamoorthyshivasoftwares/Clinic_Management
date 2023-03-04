@@ -100,7 +100,6 @@
             </LinearLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -590,7 +589,6 @@
         app:backgroundTint="#2a8577"
         android:visibility="gone"/>
 
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab2"
         android:layout_width="50dp"
@@ -604,7 +602,6 @@
         app:backgroundTint="#de2c41"
         android:visibility="gone"/>
 
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab1"
         android:layout_width="50dp"
@@ -617,7 +614,6 @@
         app:backgroundTint="#2a8577"
         android:visibility="gone"
         android:gravity="center" />
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add"

@@ -139,7 +139,7 @@
                     android:id="@+id/rdb_name_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="90dp"
+                    android:layout_marginLeft="15dp"
                     android:buttonTint="@color/tot_customer"
                     android:checked="true"
                     android:gravity="center"
@@ -159,6 +159,19 @@
                     android:onClick="onRadioButtonClicked"
                     android:padding="1dp"
                     android:text=" Visit Date"
+                    android:textColor="@color/common_txt_color"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/rdb_unknown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:buttonTint="@color/tot_customer"
+                    android:onClick="onRadioButtonClicked"
+                    android:padding="1dp"
+                    android:text="Unknown"
                     android:textColor="@color/common_txt_color"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -583,6 +596,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/LL_uhid"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
                             android:layout_marginStart="10dp"
@@ -601,7 +615,6 @@
                                 android:fontFamily="sans-serif-condensed-light"
                                 android:gravity="start"
                                 android:padding="2dp"
-
                                 android:text="Patient UHID "
                                 android:textColor="@color/common_txt_color"
                                 android:textSize="16sp"
@@ -623,7 +636,59 @@
                                 android:fontFamily="sans-serif-condensed-light"
                                 android:gravity="center_vertical"
                                 android:hint=""
-                                android:inputType="text"
+                                android:inputType="textCapCharacters"
+                                android:paddingLeft="5dp"
+                                android:textColor="#222c36"
+                                android:textColorHint="@color/gray"
+                                android:textSize="16dp"
+                                android:textStyle="normal"
+                                android:visibility="visible">
+
+                            </EditText>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="12dp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:padding="0dp"
+                            android:weightSum="2">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.7"
+                                android:fontFamily="sans-serif-condensed-light"
+                                android:gravity="start"
+                                android:padding="2dp"
+                                android:text="Area "
+                                android:textColor="@color/common_txt_color"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                tools:ignore="NestedWeights" />
+
+                            <EditText
+                                android:id="@+id/area_name_txt"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginTop="0dp"
+                                android:layout_marginEnd="0dp"
+                                android:layout_marginRight="0dp"
+                                android:layout_marginBottom="0dp"
+                                android:layout_weight="1.3"
+                                android:background="@drawable/inputtext_background"
+                                android:fontFamily="sans-serif-condensed-light"
+                                android:gravity="center_vertical"
+                                android:hint=""
+                                android:text=""
+                                android:inputType="textCapSentences"
                                 android:paddingLeft="5dp"
                                 android:textColor="#222c36"
                                 android:textColorHint="@color/gray"

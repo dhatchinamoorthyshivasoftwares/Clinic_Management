@@ -73,8 +73,8 @@ public class Appointment_Activity extends AppCompatActivity {
     TextView title_tv,doctor_name_txt,doctor_title_tv,booking_date_tv,date_tv,from_to_date_tv,schedule_time_txt,save_txt;
     ImageView  close_doctor,power_img,search_enter,search_clear,close,back_btn;
     LinearLayout LL_booking_screen,LL_date,LL_search_list;
-    EditText search_edittext,doctor_note_txt,patient_name_txt,patient_id_txt;
-    LinearLayout search_card,LL_top;
+    EditText search_edittext,doctor_note_txt,patient_name_txt,patient_id_txt,area_name_txt;
+    LinearLayout search_card,LL_top,LL_uhid;
     String[] datestr ;
     String startDateStr,strDate,SELECTED_DATE="",EMPLOYEE_ID="";
     Date monthFirstDay;
@@ -94,9 +94,10 @@ public class Appointment_Activity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce;
     private Handler mHandler;
     String PATIENT_TOKEN ="",SAVE_BOOKING_TOKEN="";
-    String PATIENT_NAME ="",PATIENT_ID="",SCHEDULE_ID = "",DOCTOR_NOTE="";
+    String PATIENT_NAME ="",PATIENT_ID="",SCHEDULE_ID = "",DOCTOR_NOTE="",REQUEST="AUTO",AREA_NAME ="";
     ProgressDialog progressDialog;
     DoctorListAdapter doctorListAdapter;
+    boolean booking_flag = false;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment);
@@ -117,7 +118,7 @@ public class Appointment_Activity extends AppCompatActivity {
         LL_search_list = (LinearLayout) findViewById(R.id.LL_search_list);
         LL_top = (LinearLayout) findViewById(R.id.LL_top);
 
-
+        LL_uhid = (LinearLayout) findViewById(R.id.LL_uhid);
 
         search_edittext = (EditText) findViewById(R.id.search_edittext);
 
@@ -127,7 +128,11 @@ public class Appointment_Activity extends AppCompatActivity {
         patient_id_txt  = (EditText) findViewById(R.id.patient_id_txt);
         doctor_note_txt = (EditText) findViewById(R.id.doctor_note_txt);
         schedule_time_txt  = (TextView) findViewById(R.id.schedule_time_txt);
+
+        area_name_txt = (EditText) findViewById(R.id.area_name_txt);
+
         save_txt  = (TextView) findViewById(R.id.save_txt);
+
 
         search_listview = (ListView) findViewById(R.id.search_listview);
 
@@ -180,20 +185,29 @@ public class Appointment_Activity extends AppCompatActivity {
             }
         });*/
 
-
         save_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Log.d("APPOINTMENT ACTIVITY =======(BOOKING MODE)=======>",REQUEST);
+                if(REQUEST.equals("AUTO")){
+                    //  Toast.makeText(context, " AUTO ENTRY ", Toast.LENGTH_SHORT).show();
+                }
+
+                if(REQUEST.equals("MANUAL")){
+                    //  Toast.makeText(context, " MANUAL ENTRY ", Toast.LENGTH_SHORT).show();
+                }
+
+                  AREA_NAME = area_name_txt.getText().toString();
+                if(AREA_NAME.equals("")){
+                    area_name_txt.setError("Select area");
+                }
+
+                //OLD
                 PATIENT_NAME = patient_name_txt.getText().toString();
                 //PATIENT_ID = patient_id_txt.getText().toString();
                 DOCTOR_NOTE = doctor_note_txt.getText().toString();
 
-              //               if(PATIENT_NAME.equals("")){
-//                    patient_name_txt.setError("Please enter patient name");
-//                }
-//                if(PATIENT_ID.equals("")){
-//                    patient_id_txt.setError("Please enter patient id");
-//                }
                 if(PATIENT_ID.equals("")){
                     patient_id_txt.setError("Select patient id");
                 }
@@ -208,10 +222,21 @@ public class Appointment_Activity extends AppCompatActivity {
                     doctor_name_txt.setError("Select doctor");
                 }
 
-                if(!PATIENT_NAME.equals("") &&  !PATIENT_ID.equals("") && !SCHEDULE_ID.equals("") && !EMPLOYEE_ID.equals("")){
-                    new AsyncSaveBookingJwt().execute(PATIENT_ID,USER_ID,SCHEDULE_ID,DOCTOR_NOTE,SELECTED_DATE,EMPLOYEE_ID);
+                if(REQUEST.equals("AUTO")) {
+
+                    if (!PATIENT_NAME.equals("") && !PATIENT_ID.equals("") && !SCHEDULE_ID.equals("") && !EMPLOYEE_ID.equals("") && !AREA_NAME.equals("")) {
+                        //BOOKING CODE 1 is DEFAULT PATIENT
+                        new AsyncSaveBookingJwt().execute(PATIENT_ID, USER_ID, SCHEDULE_ID, DOCTOR_NOTE, SELECTED_DATE, EMPLOYEE_ID,PATIENT_NAME,AREA_NAME,"1");
+                    }
                 }
 
+                if(REQUEST.equals("MANUAL")) {
+
+                    if (!PATIENT_NAME.equals("")  && !SCHEDULE_ID.equals("") && !EMPLOYEE_ID.equals("") && !AREA_NAME.equals("")) {
+                        //BOOKING CODE 2 is UNKNOWN PATIENT
+                        new AsyncSaveBookingJwt().execute("0", USER_ID, SCHEDULE_ID, DOCTOR_NOTE, SELECTED_DATE, EMPLOYEE_ID,PATIENT_NAME,AREA_NAME,"2");
+                    }
+                }
             }
         });
         if(close != null) {
@@ -384,7 +409,8 @@ public class Appointment_Activity extends AppCompatActivity {
 //                }
             }
         });
-        spin_adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item,schedule_time) {
+
+          spin_adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item,schedule_time) {
             @SuppressLint("ResourceAsColor")
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -406,7 +432,7 @@ public class Appointment_Activity extends AppCompatActivity {
 
         };
 
-        search_edittext.addTextChangedListener(new TextWatcher() {
+         search_edittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -414,6 +440,7 @@ public class Appointment_Activity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
 
             }
 
@@ -438,6 +465,7 @@ public class Appointment_Activity extends AppCompatActivity {
                         search_enter.setVisibility(View.VISIBLE);
                     }
                 }
+
                 /*if(editable.length()==0) {
                     if(search_clear.getVisibility() == View.VISIBLE){
                         search_clear.setVisibility(View.GONE);
@@ -449,17 +477,16 @@ public class Appointment_Activity extends AppCompatActivity {
             }
         });
 
-        search_enter.setOnClickListener(new View.OnClickListener() {
+         search_enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String SEARCH_VALUE ="";
 
                 if(LL_date.getVisibility() == View.VISIBLE){
                     LL_date.setVisibility(View.GONE);
                 }
 
                 if(search_edittext != null) {
+
                     if (search_edittext.getText().toString().length() >=3) {
                         patient_id_txt.setError(null);
                         patient_name_txt.setError(null);
@@ -488,10 +515,11 @@ public class Appointment_Activity extends AppCompatActivity {
                     }
 
                 }
-
+                // Log.d("","");
             }
         });
-        search_clear.setOnClickListener(new View.OnClickListener() {
+
+         search_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(search_clear.getVisibility() == View.VISIBLE){
@@ -515,12 +543,14 @@ public class Appointment_Activity extends AppCompatActivity {
                 }
             }
         });
-        power_img.setOnClickListener(new View.OnClickListener() {
+
+         power_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 goback();
             }
         });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             calendar = Calendar.getInstance();
             //calendar.add(Calendar.DATE, -13);
@@ -560,6 +590,42 @@ public class Appointment_Activity extends AppCompatActivity {
 
         patient_name_txt.setFocusable(false);
         patient_id_txt.setFocusable(false);
+        area_name_txt.setFocusable(false);
+        patient_name_txt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+               // REQUEST ="MANUAL";
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        patient_id_txt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+              //  REQUEST ="MANUAL";
+            }
+        });
     }
 
     private void OpenScheduleDialog() {
@@ -577,7 +643,6 @@ public class Appointment_Activity extends AppCompatActivity {
         }
     };
 
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
@@ -585,86 +650,199 @@ public class Appointment_Activity extends AppCompatActivity {
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.rdb_name_id:
-                if(checked)
-                    str = "Name ID Selected";
-               /* if(LL_top.getVisibility() == View.GONE){
+
+                try {
+
+                    patient_name_txt.setError(null);
+                    patient_id_txt.setError(null);
+                    area_name_txt.setError(null);
+                    doctor_name_txt.setError(null);
+                    schedule_time_txt.setError(null);
+                    doctor_note_txt.setError(null);
+
+                    REQUEST = "AUTO";
+                    if (LL_uhid.getVisibility() == View.GONE) {
+                        LL_uhid.setVisibility(View.VISIBLE);
+                    }
+                    if (checked)
+                        str = "Name ID Selected";
+                   /* if(LL_top.getVisibility() == View.GONE){
                     LL_top.setVisibility(View.VISIBLE);
                 }*/
-                if (LL_search_list.getVisibility() == View.GONE) {
-                    LL_search_list.setVisibility(View.VISIBLE);
-                }
+                    if (search_clear.getVisibility() == View.VISIBLE) {
+                        search_clear.setVisibility(View.GONE);
+                    }
+                    if (search_enter.getVisibility() == View.GONE) {
+                        search_enter.setVisibility(View.VISIBLE);
+                    }
+                    if (LL_search_list.getVisibility() == View.GONE) {
+                        LL_search_list.setVisibility(View.VISIBLE);
+                    }
 
-                if(LL_date.getVisibility() == View.VISIBLE){
-                    LL_date.setVisibility(View.GONE);
-                }
-                if(search_card.getVisibility() == View.GONE){
-                    search_card.setVisibility(View.VISIBLE);
-                }
-                if(LL_booking_screen.getVisibility() ==View.GONE){
-                    LL_booking_screen.setVisibility(View.VISIBLE);
-                }
-                search_listview.setAdapter(null);
-                search_edittext.setText("");
+                    if (LL_date.getVisibility() == View.VISIBLE) {
+                        LL_date.setVisibility(View.GONE);
+                    }
+                    if (search_card.getVisibility() == View.GONE) {
+                        search_card.setVisibility(View.VISIBLE);
+                    }
+                    if (LL_booking_screen.getVisibility() == View.GONE) {
+                        LL_booking_screen.setVisibility(View.VISIBLE);
+                    }
+                    search_listview.setAdapter(null);
+                    search_edittext.setText("");
 
-                patient_name_txt.setText("");
-                patient_id_txt.setText("");
-                schedule_time_txt.setText("");
-                doctor_note_txt.setText("");
-                DOCTOR_NOTE ="";
-                SCHEDULE_ID = "";
-                booking_date_tv.setText(String.valueOf(DATE));
-                cal = Calendar.getInstance();
-                SELECTED_DATE = mdformat_db.format(cal.getTime());
-                //  patient_name_txt.setFocusableInTouchMode(true);
-              //  patient_id_txt.setFocusableInTouchMode(true);
+                    patient_name_txt.setText("");
+                    patient_id_txt.setText("");
+                    schedule_time_txt.setText("");
+                    doctor_note_txt.setText("");
+                    area_name_txt.setText("");
+
+                    doctor_name_txt.setText("");
+                    EMPLOYEE_ID = "";
+                    AREA_NAME = "";
+                    PATIENT_NAME = "";
+                    DOCTOR_NOTE = "";
+                    SCHEDULE_ID = "";
+
+                    booking_date_tv.setText(String.valueOf(DATE));
+                    cal = Calendar.getInstance();
+                    SELECTED_DATE = mdformat_db.format(cal.getTime());
+
+                    patient_name_txt.setFocusable(false);
+                    patient_id_txt.setFocusable(false);
+                    area_name_txt.setFocusable(false);
+                    booking_flag = false;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.rdb_date:
-                if(checked)
-                    str = "DATE  Selected";
-                /*if(LL_top.getVisibility() == View.GONE){
+                try {
+
+                    patient_name_txt.setError(null);
+                    patient_id_txt.setError(null);
+                    area_name_txt.setError(null);
+                    doctor_name_txt.setError(null);
+                    schedule_time_txt.setError(null);
+                    doctor_note_txt.setError(null);
+
+                    REQUEST = "AUTO";
+                    if (LL_uhid.getVisibility() == View.GONE) {
+                        LL_uhid.setVisibility(View.VISIBLE);
+                    }
+                    if (checked)
+                        str = "DATE  Selected";
+                   /*if(LL_top.getVisibility() == View.GONE){
                     LL_top.setVisibility(View.VISIBLE);
                 }*/
-                if (LL_search_list.getVisibility() == View.GONE) {
-                    LL_search_list.setVisibility(View.VISIBLE);
+                    if (LL_search_list.getVisibility() == View.GONE) {
+                        LL_search_list.setVisibility(View.VISIBLE);
+                    }
+
+                    if (LL_date.getVisibility() == View.GONE) {
+                        LL_date.setVisibility(View.VISIBLE);
+                    }
+                    if (search_card.getVisibility() == View.VISIBLE) {
+                        search_card.setVisibility(View.GONE);
+                    }
+                    if (LL_booking_screen.getVisibility() == View.GONE) {
+                        LL_booking_screen.setVisibility(View.VISIBLE);
+                    }
+                    // new AsyncGetPatientsJwt().execute("","2","15-11-2022","22-11-2022");
+                    search_listview.setAdapter(null);
+                    search_edittext.setText("");
+
+                    patient_name_txt.setText("");
+                    patient_id_txt.setText("");
+
+                    schedule_time_txt.setText("");
+                    doctor_note_txt.setText("");
+                    area_name_txt.setText("");
+
+                    doctor_name_txt.setText("");
+                    EMPLOYEE_ID = "";
+
+                    AREA_NAME = "";
+                    PATIENT_NAME = "";
+                    DOCTOR_NOTE = "";
+                    SCHEDULE_ID = "";
+
+                    booking_date_tv.setText(String.valueOf(DATE));
+
+                    cal = Calendar.getInstance();
+                    SELECTED_DATE = mdformat_db.format(cal.getTime());
+
+                    //  patient_name_txt.setFocusableInTouchMode(true);
+                    //  patient_id_txt.setFocusableInTouchMode(true);
+
+                    patient_name_txt.setFocusable(false);
+                    patient_id_txt.setFocusable(false);
+                    area_name_txt.setFocusable(false);
+                    booking_flag = false;
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                if(LL_date.getVisibility() == View.GONE){
-                    LL_date.setVisibility(View.VISIBLE);
-                }
-                if(search_card.getVisibility() == View.VISIBLE){
-                    search_card.setVisibility(View.GONE);
-                }
-                if(LL_booking_screen.getVisibility() ==View.GONE){
-                    LL_booking_screen.setVisibility(View.VISIBLE);
-                }
-               // new AsyncGetPatientsJwt().execute("","2","15-11-2022","22-11-2022");
-                search_listview.setAdapter(null);
-                search_edittext.setText("");
-
-                patient_name_txt.setText("");
-                patient_id_txt.setText("");
-
-                schedule_time_txt.setText("");
-                doctor_note_txt.setText("");
-                DOCTOR_NOTE ="";
-                SCHEDULE_ID = "";
-
-                booking_date_tv.setText(String.valueOf(DATE));
-
-                cal = Calendar.getInstance();
-                SELECTED_DATE = mdformat_db.format(cal.getTime());
-
-                //  patient_name_txt.setFocusableInTouchMode(true);
-                //  patient_id_txt.setFocusableInTouchMode(true);
                 break;
+            case R.id.rdb_unknown:
+                try {
+
+                    patient_name_txt.setError(null);
+                    patient_id_txt.setError(null);
+                    area_name_txt.setError(null);
+                    doctor_name_txt.setError(null);
+                    schedule_time_txt.setError(null);
+                    doctor_note_txt.setError(null);
+
+                    REQUEST = "MANUAL";
+                    if (LL_uhid.getVisibility() == View.VISIBLE) {
+                        LL_uhid.setVisibility(View.GONE);
+                    }
+                    if (LL_date.getVisibility() == View.VISIBLE) {
+                        LL_date.setVisibility(View.GONE);
+                    }
+                    if (search_card.getVisibility() == View.VISIBLE) {
+                        search_card.setVisibility(View.GONE);
+                    }
+                    if (LL_booking_screen.getVisibility() == View.GONE) {
+                        LL_booking_screen.setVisibility(View.VISIBLE);
+                    }
+
+                    patient_name_txt.setText("");
+                    patient_id_txt.setText("");
+
+                    schedule_time_txt.setText("");
+                    doctor_note_txt.setText("");
+                    area_name_txt.setText("");
+
+                    doctor_name_txt.setText("");
+                    EMPLOYEE_ID = "";
+
+                    AREA_NAME = "";
+                    PATIENT_NAME = "";
+                    DOCTOR_NOTE = "";
+                    SCHEDULE_ID = "";
+                    patient_name_txt.setFocusable(true);
+                    patient_id_txt.setFocusable(true);
+                    area_name_txt.setFocusable(true);
+
+                    patient_name_txt.setFocusableInTouchMode(true);
+                    patient_id_txt.setFocusableInTouchMode(true);
+                    area_name_txt.setFocusableInTouchMode(true);
+                    booking_flag = true;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
             default:
                 break;
-
         }
                  //   Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
         Log.d("APPOINTMENT ACTIVITY ====(OPTION SELECTION)====>",str);
 
     }
+
 
     public void goback() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
@@ -879,6 +1057,7 @@ public class Appointment_Activity extends AppCompatActivity {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    REQUEST ="AUTO";
                     patient_name_txt.setText("");
                     patient_id_txt.setText("");
                     if (LL_search_list.getVisibility() == View.VISIBLE) {
@@ -891,10 +1070,12 @@ public class Appointment_Activity extends AppCompatActivity {
                     patient_name_txt.setText(String.valueOf(searchList.get(position).getPatient_name()));
                     patient_id_txt.setText(String.valueOf(searchList.get(position).getUhid()));
 
+                    area_name_txt.setText(String.valueOf(searchList.get(position).getCity_name()));
+
                     PATIENT_ID = searchList.get(position).getPatient_id();
 
-                    patient_name_txt.setFocusable(false);
-                    patient_id_txt.setFocusable(false);
+                    //patient_name_txt.setFocusable(false);
+                   // patient_id_txt.setFocusable(false);
                 }
             });
             return convertView;
@@ -1022,8 +1203,8 @@ public class Appointment_Activity extends AppCompatActivity {
             }
             //Catch Block UserAuth true
             catch (Exception e) {
-                Log.d("AsyncLoggerService", "Message");
-                Log.d("AsyncLoggerService", e.getMessage());
+                Log.d("AsyncDoctorLoggerService", "Message");
+                Log.d("AsyncDoctorLoggerService", e.getMessage());
             }
             return true;
         }
@@ -1032,7 +1213,7 @@ public class Appointment_Activity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-//            progressDialog = new ProgressDialog(Appointment_Activity.this);
+             //            progressDialog = new ProgressDialog(Appointment_Activity.this);
 //            progressDialog.setMessage("Loading..."); // Setting Message
 //            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
 //            progressDialog.show();
@@ -1049,7 +1230,7 @@ public class Appointment_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result) {
 
-//            if(progressDialog != null) {
+         //            if(progressDialog != null) {
 //                progressDialog.hide();
 //            }
             try{
@@ -1071,7 +1252,6 @@ public class Appointment_Activity extends AppCompatActivity {
             }
         }
     }
-
 
     private void DoctorPopup() {
         doctor_dialog.show();
@@ -1116,8 +1296,8 @@ public class Appointment_Activity extends AppCompatActivity {
             }
             //Catch Block UserAuth true
             catch (Exception e) {
-                Log.d("AsyncLoggerService", "Message");
-                Log.d("AsyncLoggerService", e.getMessage());
+                Log.d("AsyncScheduleLoggerService", "Message");
+                Log.d("AsyncScheduleLoggerService", e.getMessage());
             }
             return true;
         }
@@ -1153,8 +1333,6 @@ public class Appointment_Activity extends AppCompatActivity {
                     }
                 }
             },1000);
-
-
         }
     }
 
@@ -1188,8 +1366,8 @@ public class Appointment_Activity extends AppCompatActivity {
             }
             //Catch Block UserAuth true
             catch (Exception e) {
-                Log.d("AsyncLoggerService", "Message");
-                Log.d("AsyncLoggerService", e.getMessage());
+                Log.d("AsyncPatientLoggerService", "Message");
+                Log.d("AsyncPatientLoggerService", e.getMessage());
             }
             return true;
         }
@@ -1257,8 +1435,8 @@ public class Appointment_Activity extends AppCompatActivity {
             }
             //Catch Block UserAuth true
             catch (Exception e) {
-                Log.d("AsyncLoggerService", "Message");
-                Log.d("AsyncLoggerService", e.getMessage());
+                Log.d("AsyncSearchLoggerService", "Message");
+                Log.d("AsyncSearchLoggerService", e.getMessage());
             }
             return true;
         }
@@ -1314,7 +1492,6 @@ public class Appointment_Activity extends AppCompatActivity {
                     LL_booking_screen.setVisibility(View.VISIBLE);
                 }
                 Toast.makeText(context, "No record found", Toast.LENGTH_SHORT).show();
-
             }
             //InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
            // imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -1339,22 +1516,20 @@ public class Appointment_Activity extends AppCompatActivity {
 
                 RestAPI objRestAPI = new RestAPI();
                 if (isNetworkAvailable()) {
-                    jsonObj = objRestAPI.GetSaveBookingJWT(params[0],params[1],params[2],params[3],params[4],params[5]);
+                    jsonObj = objRestAPI.GetSaveBookingJWT(params[0],params[1],params[2],params[3],params[4],params[5],params[6],params[7],Integer.parseInt(params[8]));
                     message = "";
                     SAVE_BOOKING_TOKEN = "";
-
 
                     if(jsonObj!=null) {
                         //  jsonObj_body = new JSONObject(jsonObj.getString("body"));
                         SAVE_BOOKING_TOKEN = new JSONObject(jsonObj.getString("body")).getString("token");
                     }
-
                 }
             }
             //Catch Block UserAuth true
             catch (Exception e) {
-                Log.d("AsyncLoggerService", "Message");
-                Log.d("AsyncLoggerService", e.getMessage());
+                Log.d("AsyncSaveBookingLoggerService", "Message");
+                Log.d("AsyncSaveBookingLoggerService", e.getMessage());
             }
             return true;
         }
@@ -1396,7 +1571,6 @@ public class Appointment_Activity extends AppCompatActivity {
                     message = "";
 
                     if(jsonObj!=null) {
-
                         message = new JSONObject(jsonObj.getString("body")).getString("message");
                     }
 
@@ -1404,8 +1578,8 @@ public class Appointment_Activity extends AppCompatActivity {
             }
             //Catch Block UserAuth true
             catch (Exception e) {
-                Log.d("AsyncLoggerService", "Message");
-                Log.d("AsyncLoggerService", e.getMessage());
+                Log.d("AsyncSaveBookingLoggerService", "Message");
+                Log.d("AsyncSaveBookingLoggerService", e.getMessage());
             }
             return true;
         }
@@ -1418,7 +1592,7 @@ public class Appointment_Activity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
+              //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
 
             if(message.equals("success")) {
                 patient_name_txt.setText("");
@@ -1429,6 +1603,7 @@ public class Appointment_Activity extends AppCompatActivity {
 
                 doctor_name_txt.setText("");
                 booking_date_tv.setText("");
+                area_name_txt.setText("");
 
                 if(search_clear.getVisibility() == View.VISIBLE){
                     search_clear.setVisibility(View.GONE);
@@ -1436,7 +1611,6 @@ public class Appointment_Activity extends AppCompatActivity {
                 if(search_enter.getVisibility() ==View.GONE){
                     search_enter.setVisibility(View.VISIBLE);
                 }
-
 
                 Toast.makeText(context, "Saved Successfully", Toast.LENGTH_SHORT).show();
 
@@ -1449,7 +1623,6 @@ public class Appointment_Activity extends AppCompatActivity {
                     }
                 },400);
             }
-
         }
     }
 
@@ -1469,9 +1642,11 @@ public class Appointment_Activity extends AppCompatActivity {
     public void onBackPressed() {
 
          //  if(LL_top.getVisibility() ==View.GONE){
-     //       LL_top.setVisibility(View.VISIBLE);
-      //  }
-        Go_Back();
+         //       LL_top.setVisibility(View.VISIBLE);
+         //  }
+
+         Go_Back();
+
          //  super.onBackPressed();
          /*   if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
@@ -1489,7 +1664,6 @@ public class Appointment_Activity extends AppCompatActivity {
     protected void onDestroy()
     {
         super.onDestroy();
-
         if (mHandler != null) { mHandler.removeCallbacks(mRunnable); }
     }
 
@@ -1499,32 +1673,38 @@ public class Appointment_Activity extends AppCompatActivity {
         if(loader_dialog != null) {
             loader_dialog.dismiss();
         }
+        if(schedule_dialog != null) {
+            schedule_dialog.dismiss();
+        }
+        if(doctor_dialog != null){
+            doctor_dialog.dismiss();
+        }
     }
 
     public void Go_Back() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
-//        builder.setMessage("Are you sure want to go back ?")
-//                .setIcon(R.mipmap.appointment)
-//                .setTitle(COMPANY_NAME)
-//              //  .setIcon(R.drawable.ic_launcher_foreground)
-//                .setCancelable(false)
-//                //.setIcon(R.mipmap.admin)
-//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//
-//                    }
-//                })
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        dialog.cancel();
-//                    }
-//                });
-//        AlertDialog alert = builder.create();
-//        alert.show();
+
+        //        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
+        //        builder.setMessage("Are you sure want to go back ?")
+        //                .setIcon(R.mipmap.appointment)
+        //                .setTitle(COMPANY_NAME)
+        //              //  .setIcon(R.drawable.ic_launcher_foreground)
+        //                .setCancelable(false)
+        //                //.setIcon(R.mipmap.admin)
+        //                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        //                    public void onClick(DialogInterface dialog, int id) {
+        //
+        //                    }
+        //                })
+        //                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        //                    public void onClick(DialogInterface dialog, int id) {
+        //                        dialog.cancel();
+        //                    }
+        //                });
+        //        AlertDialog alert = builder.create();
+        //        alert.show();
 
         Intent i=new Intent(Appointment_Activity.this,MainActivity.class);
         Appointment_Activity.this.finish();
         startActivity(i);
     }
-
 }

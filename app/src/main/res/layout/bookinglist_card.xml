@@ -50,7 +50,7 @@
                         android:fontFamily="sans-serif-condensed-light"
                         android:gravity="start"
                         android:padding="1dp"
-                        android:text="Mari Muthu"
+                        android:text="-"
                         android:textColor="#636363"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -87,18 +87,44 @@
                         android:fontFamily="sans-serif-condensed-light"
                         android:gravity="start"
                         android:padding="0dp"
-                        android:text="Madurai"
+                        android:text="-"
                         android:textColor="#8b8c8c"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         tools:ignore="NestedWeights" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="0dp"
+                        android:gravity="end"
+                        android:orientation="horizontal"
+                        android:padding="0dp">
+                        <TextView
+                            android:id="@+id/schedule_time_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:fontFamily="sans-serif-condensed-light"
+                            android:gravity="center"
+                            android:paddingRight="4dp"
+                            android:paddingLeft="4dp"
+                            android:text="-"
+                            android:background="@drawable/time_bg"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+
+                            tools:ignore="NestedWeights" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/LL_uhid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:orientation="horizontal"
                     android:padding="0dp"
                     android:weightSum="2">
@@ -117,7 +143,7 @@
                             android:fontFamily="sans-serif-condensed-light"
                             android:gravity="start"
                             android:padding="1dp"
-                            android:text="UHID"
+                            android:text="UHID "
                             android:textColor="#636363"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -131,38 +157,51 @@
                             android:fontFamily="sans-serif-condensed-light"
                             android:gravity="start"
                             android:padding="1dp"
-                            android:text="76001"
+                            android:text=""
                             android:textColor="#636363"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             tools:ignore="NestedWeights" />
                     </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginTop="0dp"
-                        android:gravity="end"
-                        android:orientation="horizontal"
-                        android:padding="0dp">
-                        <TextView
-                            android:id="@+id/schedule_time_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0"
-                            android:fontFamily="sans-serif-condensed-light"
-                            android:gravity="center"
-                            android:paddingRight="4dp"
-                            android:paddingLeft="4dp"
-                            android:text="10:30 AM"
-                            android:background="@drawable/time_bg"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-
-                            tools:ignore="NestedWeights" />
-                    </LinearLayout>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:gravity="start"
+                    android:orientation="horizontal"
+                    android:padding="0dp"
+                    android:weightSum="2">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:fontFamily="sans-serif-condensed-light"
+                        android:gravity="start"
+                        android:padding="1dp"
+                        android:text="Note "
+                        android:textColor="#636363"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:ignore="NestedWeights" />
+
+                    <TextView
+                        android:id="@+id/note_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:fontFamily="sans-serif-condensed-light"
+                        android:gravity="start"
+                        android:padding="1dp"
+                        android:text=""
+                        android:textColor="#636363"
+                        android:textSize="13sp"
+                        android:textStyle="bold|italic"
+                        tools:ignore="NestedWeights" />
+                </LinearLayout>
+
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>

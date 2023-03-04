@@ -1,9 +1,9 @@
 package com.example.clinicmanagement;
 
 public class Bookinglist_Details {
-        String employee_id,employee_name,schedule_name,booking_id,patient_name,patient_id,user_id,gender_id,city_id,doctor_note,uhid,created_date,booking_date,schedule_id,gender_name,city_name;
+        String employee_id,employee_name,schedule_name,booking_id,patient_name,patient_id,user_id,gender_id,city_id,doctor_note,uhid,created_date,booking_date,schedule_id,gender_name,city_name,booking_type;
 
-        public Bookinglist_Details(String booking_id, String uhid, String patient_id, String patient_name, String gender_id, String gender_name, String city_id,String city_name, String user_id, String schedule_id,String doctor_note, String created_date, String booking_date,String schedule_name,String employee_name,String employee_id) {
+        public Bookinglist_Details(String booking_id, String uhid, String patient_id, String patient_name, String gender_id, String gender_name, String city_id,String city_name, String user_id, String schedule_id,String doctor_note, String created_date, String booking_date,String schedule_name,String employee_name,String employee_id,String booking_type) {
             this.booking_id = booking_id;
             this.uhid = uhid;
             this.patient_id = patient_id;
@@ -20,7 +20,16 @@ public class Bookinglist_Details {
             this.schedule_name = schedule_name;
             this.employee_name = employee_name;
             this.employee_id = employee_id;
+            this.booking_type = booking_type;
         }
+
+    public String getBooking_type() {
+        return booking_type;
+    }
+
+    public void setBooking_type(String booking_type) {
+        this.booking_type = booking_type;
+    }
 
     public String getEmployee_id() {
         return employee_id;

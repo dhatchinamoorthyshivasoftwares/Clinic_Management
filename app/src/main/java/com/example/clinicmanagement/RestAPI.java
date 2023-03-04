@@ -24,16 +24,17 @@ import java.util.Date;
 
 public class RestAPI {
 
-    // public  static  String neturl = "";
-    // public  static  String neturl = "";
+    //LOCAL TEST
+    public  static  String urlString= "http://192.168.0.222/api/mobileapi";
+    public  static  String neturl = "http://192.168.0.222/";
 
-    //TEST
-  //  public  static  String urlString= "http://172.16.1.151:8080/api/mobileapi";
-  //  public  static  String neturl = "http://172.16.1.151:8080/";
+    //LOCAL TEST
+//    public  static  String urlString= "http://172.16.1.151:8080/api/mobileapi";
+//    public  static  String neturl = "http://172.16.1.151:8080/";
 
     //LIVE
-    public  static  String urlString= "https://hmsapi.trio-S.com/api/mobileapi";
-    public  static  String neturl = "https://hmsapi.trio-S.com/";
+ //   public  static  String urlString= "https://hmsapi.trio-S.com/api/mobileapi";
+ //   public  static  String neturl = "https://hmsapi.trio-S.com/";
 
     public String GetJSONResponse(String paraURL, String paraData) {
         BufferedReader reader = null;
@@ -56,12 +57,12 @@ public class RestAPI {
             while ((line = reader.readLine()) != null) {
                 // Append server response in string
                 response.append(line);
-                Log.i("GET_ResponseException=========>", line.toString());
+                Log.i("GET_ResponseException ========>", line.toString());
             }
             // Log.i("GET_Response ======>",response.toString());
         }
         catch (Exception ex) {
-            Log.i("GET_ResponseException", ex.toString());
+            Log.i("GET_ResponseException ========>", ex.toString());
         } finally {
             try {
                 reader.close();
@@ -85,20 +86,19 @@ public class RestAPI {
             myResponse = new JSONObject(GetJSONResponse(url, data));
             //Log.i("LoginException",myResponse.getString("UserID"));
         } catch (JSONException ex) {
-            Log.i("LoginException", ex.toString());
+            Log.i("LoginException ========>", ex.toString());
         }
 
         return myResponse;
     }
 
-
     public JSONObject GetDeviceCheck(String deviceid ) throws Exception {
 
-       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+        /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String changedDate = dateFormat.format(d);
-        */
+        String changedDate = dateFormat.format(d);*/
+
         String Url = urlString+"/deviceCheck";
         JSONObject myResponse = null;
 
@@ -130,7 +130,7 @@ public class RestAPI {
             while ((line = reader.readLine()) != null) {
                 // sb.append(line+"\n");
                 sb.append(line);
-                Log.e("", "LOGIN URL===========>" + line);
+                Log.e("", "LOGIN URL ========>" + line);
             }
 
             //JSONTokener tokener = new JSONTokener(line);
@@ -146,11 +146,12 @@ public class RestAPI {
 
     public JSONObject GetLoginJWT(String user_code,String username,String pincode) throws Exception {
 
-       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+        /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String changedDate = dateFormat.format(d);
         */
+
         String Url = urlString+"/apploginJwt";
         JSONObject myResponse = null;
 
@@ -182,7 +183,7 @@ public class RestAPI {
             while ((line = reader.readLine()) != null) {
                 // sb.append(line+"\n");
                 sb.append(line);
-                Log.e("", "LOGIN URL===========>" + line);
+                Log.e("", "LOGIN URL ==========>" + line);
             }
 
             //JSONTokener tokener = new JSONTokener(line);
@@ -198,11 +199,12 @@ public class RestAPI {
 
     public JSONObject GetSchedule(String current_date ) throws Exception {
 
-       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+         /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String changedDate = dateFormat.format(d);
         */
+
         String Url = urlString+"/schedule";
         JSONObject myResponse = null;
 
@@ -228,13 +230,13 @@ public class RestAPI {
         String line = null;
 
         // Log.e("", "LOGIN URL=========>" + response);
-        Log.e("", "REST API =====()====>" + json);
+        Log.e("", "REST API =====( schedule )====>" + json);
 
         try {
             while ((line = reader.readLine()) != null) {
                 // sb.append(line+"\n");
                 sb.append(line);
-                Log.e("", "LOGIN URL===========>" + line);
+                Log.e("", "LOGIN URL ==========>" + line);
             }
 
             //JSONTokener tokener = new JSONTokener(line);
@@ -250,7 +252,7 @@ public class RestAPI {
 
     public JSONObject GetLogin(String jwtToken) throws Exception {
 
-       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+         /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String changedDate = dateFormat.format(d);
@@ -286,7 +288,7 @@ public class RestAPI {
             while ((line = reader.readLine()) != null) {
                 // sb.append(line+"\n");
                 sb.append(line);
-                Log.e("", "LOGIN URL===========>" + line);
+                Log.e("", "LOGIN URL =========>" + line);
             }
 
             //JSONTokener tokener = new JSONTokener(line);
@@ -300,14 +302,12 @@ public class RestAPI {
         return myResponse;
     }
 
-
     public JSONObject GetPatientJWT(String search_Value,String search_Type,String from_Date,String to_Date) throws Exception {
 
        /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String changedDate = dateFormat.format(d);
-        */
+        String changedDate = dateFormat.format(d); */
         String Url = urlString+"/searchPatientsJwt";
         JSONObject myResponse = null;
 
@@ -339,7 +339,7 @@ public class RestAPI {
             while ((line = reader.readLine()) != null) {
                 // sb.append(line+"\n");
                 sb.append(line);
-                Log.e("", "LOGIN URL===========>" + line);
+                Log.e("", "LOGIN URL =========>" + line);
             }
 
             //JSONTokener tokener = new JSONTokener(line);
@@ -353,14 +353,13 @@ public class RestAPI {
         return myResponse;
     }
 
-
     public JSONObject GetPatient(String jwtToken) throws Exception {
 
-       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+         /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String changedDate = dateFormat.format(d);
-        */
+        String changedDate = dateFormat.format(d); */
+
         String Url = urlString+"/searchPatients";
         JSONObject myResponse = null;
 
@@ -406,21 +405,23 @@ public class RestAPI {
         return myResponse;
     }
 
+    public JSONObject GetSaveBookingJWT(String patient_id,String user_id,String schedule_id,String doctor_note,String booking_date,String employee_id,String patient_name,String area_name,int booking_type) throws Exception {
 
-    public JSONObject GetSaveBookingJWT(String patient_id,String user_id,String schedule_id,String doctor_note,String booking_date,String employee_id) throws Exception {
-
-       /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
+         /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String changedDate = dateFormat.format(d);
         */
+
         String Url = urlString+"/saveBookingJwt";
         JSONObject myResponse = null;
 
         URL url = new URL(Url); //Enter URL here
-        String json = "{\"patient_id\": \""+patient_id+"\",\"user_id\":\""+user_id+"\",\"schedule_id\":\""+schedule_id+"\",\"doctor_note\":\""+doctor_note+"\",\"booking_date\":\""+booking_date+"\",\"user_code\":\""+USER_CODE+"\",\"employee_id\":\""+employee_id+"\"}";
+        String json = "{\"patient_id\": \""+patient_id+"\",\"user_id\":\""+user_id+"\",\"schedule_id\":\""+schedule_id+"\",\"doctor_note\":\""+doctor_note+"\",\"booking_date\":\""+booking_date+"\",\"user_code\":\""+USER_CODE+"\",\"employee_id\":\""+employee_id+"\",\"patient_name\":\""+patient_name+"\",\"area_name\":\""+area_name+"\",\"booking_type\":"+booking_type+"}";
+
         //Log.e("", "JSON_URL=========>" + json);
         //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
+
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setDoOutput(true);
         httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
@@ -459,7 +460,7 @@ public class RestAPI {
         return myResponse;
     }
 
-    public JSONObject GetUpdateBooking(String user_code,String schedule_id,String doctor_note,String booking_id,String booking_date,String employee_id) throws Exception {
+    public JSONObject GetUpdateBooking(String user_code,String schedule_id,String doctor_note,String booking_id,String booking_date,String employee_id,String area_name,String patient_name) throws Exception {
 
        /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
         Date d = dateFormatprev.parse(date);
@@ -470,7 +471,7 @@ public class RestAPI {
         JSONObject myResponse = null;
 
         URL url = new URL(Url); //Enter URL here
-        String json = "{\"user_code\": \""+user_code+"\",\"schedule_id\":\""+schedule_id+"\",\"doctor_note\":\""+doctor_note+"\",\"booking_id\":\""+booking_id+"\",\"booking_date\":\""+booking_date+"\",\"employee_id\":\""+employee_id+"\"}";
+        String json = "{\"user_code\": \""+user_code+"\",\"schedule_id\":\""+schedule_id+"\",\"doctor_note\":\""+doctor_note+"\",\"booking_id\":\""+booking_id+"\",\"booking_date\":\""+booking_date+"\",\"employee_id\":\""+employee_id+"\",\"area_name\":\""+area_name+"\",\"patient_name\":\""+patient_name+"\"}";
         //Log.e("", "JSON_URL=========>" + json);
         //  URL url = new URL("https://dummy.restapiexample.com/api/v1/create"); //Enter URL here
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -563,7 +564,6 @@ public class RestAPI {
         return myResponse;
     }
 
-
     public JSONObject GetBookingList(String current_Date) throws Exception {
 
        /* SimpleDateFormat dateFormatprev = new SimpleDateFormat("dd-MM-yyyy");
@@ -596,20 +596,20 @@ public class RestAPI {
         String line = null;
 
         // Log.e("", "LOGIN URL=========>" + response);
-        Log.e("", "REST API =====(Booking List PARAMS)====>" + json);
+        Log.e("", " REST API =====(Booking List PARAMS)====> " + json);
 
         try {
             while ((line = reader.readLine()) != null) {
                 // sb.append(line+"\n");
                 sb.append(line);
-                Log.e("", "LOGIN URL===========>" + line);
+                Log.e("", " LOGIN URL===========> " + line);
             }
 
             //JSONTokener tokener = new JSONTokener(line);
             // Token_details = new JSONObject(tokener);
             JSONTokener tokener = new JSONTokener(sb.toString());
             myResponse = new JSONObject(tokener);
-            Log.e("", "REST API =====(Booking List JSON RESPONSE)====>" + myResponse.toString());
+            Log.e("", " REST API =====(Booking List JSON RESPONSE)====> " + myResponse.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -623,6 +623,7 @@ public class RestAPI {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String changedDate = dateFormat.format(d);
         */
+
         String Url = urlString+"/listDoctor";
         JSONObject myResponse = null;
 
@@ -648,7 +649,7 @@ public class RestAPI {
         String line = null;
 
         // Log.e("", "LOGIN URL=========>" + response);
-        Log.e("", "REST API =====(Doctor List PARAMS)====>" + json);
+        Log.e("", " REST API =====(Doctor List PARAMS)====> " + json);
 
         try {
             while ((line = reader.readLine()) != null) {
@@ -661,7 +662,7 @@ public class RestAPI {
             // Token_details = new JSONObject(tokener);
             JSONTokener tokener = new JSONTokener(sb.toString());
             myResponse = new JSONObject(tokener);
-            Log.e("", "REST API =====(Doctor List JSON RESPONSE)====>" + myResponse.toString());
+            Log.e("", " REST API =====(Doctor List JSON RESPONSE)====>  " + myResponse.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -700,7 +701,7 @@ public class RestAPI {
         String line = null;
 
         // Log.e("", "LOGIN URL=========>" + response);
-        Log.e("", "REST API =====(COMPANY DATA PARAMS)====>" + json);
+        Log.e("", " REST API =====(COMPANY DATA PARAMS)====> " + json);
 
         try {
             while ((line = reader.readLine()) != null) {
@@ -713,7 +714,7 @@ public class RestAPI {
             // Token_details = new JSONObject(tokener);
             JSONTokener tokener = new JSONTokener(sb.toString());
             myResponse = new JSONObject(tokener);
-            Log.e("", "REST API =====(COMPANY DATA JSON RESPONSE)====>" + myResponse.toString());
+            Log.e("", " REST API =====(COMPANY DATA JSON RESPONSE)====> " + myResponse.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -727,6 +728,7 @@ public class RestAPI {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String changedDate = dateFormat.format(d);
         */
+
         String Url = neturl+"api/common/companyData";
         JSONObject myResponse = null;
 
@@ -752,7 +754,7 @@ public class RestAPI {
         String line = null;
 
         // Log.e("", "LOGIN URL=========>" + response);
-        Log.e("", "REST API =====(COMPANY DATA PARAMS)====>" + json);
+        Log.e("", " REST API =====(COMPANY DATA PARAMS)====> " + json);
 
         try {
             while ((line = reader.readLine()) != null) {

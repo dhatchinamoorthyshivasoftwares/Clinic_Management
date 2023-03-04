@@ -407,7 +407,6 @@ public class Login_Activity extends AppCompatActivity {
                        if(jsonObj_body != null) {
                            success = jsonObj_body.getString("message");
                            jsonObj_userinfo = new JSONObject(jsonObj_body.getString("UserInfo"));
-
                        }
                 }
             }
@@ -477,7 +476,6 @@ public class Login_Activity extends AppCompatActivity {
 
         }
     }
-
 
     public class AsyncLogin extends
             AsyncTask<String, JSONObject,Boolean> {
@@ -598,7 +596,6 @@ public class Login_Activity extends AppCompatActivity {
                     }
                 }
             }
-
         }
     }
 
@@ -618,7 +615,8 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     private void setDotImagesState() {
-      /*  for (int i = 0; i < codeString.length(); i++) {
+
+        /*  for (int i = 0; i < codeString.length(); i++) {
 
             dots.get(i).setBackgroundResource(R.drawable.paswd_enable);
         }
@@ -627,6 +625,7 @@ public class Login_Activity extends AppCompatActivity {
                 dots.get(j).setBackgroundResource(R.drawable.paswd_disable);
             }
         }*/
+
         if(codeString.length() == 0){
             //  tv_1.setText("");
             //  tv_2.setText("");
@@ -686,12 +685,14 @@ public class Login_Activity extends AppCompatActivity {
         return s.substring(0, s.length()-codeString.length() );
     }
     //Remove only last character
+
     private String removeLastChar(String s) {
         if (s == null || s.length() == 0) {
             return s;
         }
         return s.substring(0, s.length()-1 );
     }
+
     private void getbtnStringCode(int val) {
         switch (val) {
             case 0:

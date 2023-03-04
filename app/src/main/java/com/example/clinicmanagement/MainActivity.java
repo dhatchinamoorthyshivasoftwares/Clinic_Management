@@ -71,12 +71,14 @@ public class MainActivity extends AppCompatActivity {
     Context context ;
     ListView list_view,list_view_doctor;
     TextView no_record_tv,title_tv,edit_title_tv,doctor_title_tv,schedule_title_tv,booking_date_tv,patient_name_txt,patient_id_txt,schedule_time_txt,doctor_name_txt,doctor_note_txt,save_txt;
+    LinearLayout LL_dialog_uhid;
     ArrayList<Schedule_Details> schedule_details = new ArrayList<>();
     ArrayList<Bookinglist_Details> bookinglist_details = new ArrayList<>();
     ScheduleListAdapter scheduleListAdapter;
     ImageView close,close_schedule,close_doctor;
-    String SCHEDULE_ID="",SELECTED_DATE="",DOCTOR_NOTE="", BOOKING_ID ="",BOOKING_DATE="",EMPLOYEE_ID="";
+    String SCHEDULE_ID="",SELECTED_DATE="",DOCTOR_NOTE="", BOOKING_ID ="",BOOKING_DATE="",EMPLOYEE_ID="",AREA_NAME= "",PATIENT_NAME="";
 
+    EditText area_name_txt ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
         doctor_note_txt = (EditText) edit_dialog.findViewById(R.id.doctor_note_txt);
         schedule_time_txt  = (TextView) edit_dialog.findViewById(R.id.schedule_time_txt);
         doctor_name_txt = (TextView) edit_dialog.findViewById(R.id.doctor_name_txt);
+
+        area_name_txt = (EditText) edit_dialog.findViewById(R.id.area_name_txt);
+
         save_txt  = (TextView) edit_dialog.findViewById(R.id.save_txt);
         booking_date_tv = (TextView) edit_dialog.findViewById(R.id.booking_date_tv);
 
@@ -125,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
 
         list_view  = (ListView) schedule_dialog.findViewById(R.id.list_view);
         list_view_doctor  = (ListView) doctor_dialog.findViewById(R.id.list_view);
+
+        LL_dialog_uhid = (LinearLayout) edit_dialog.findViewById(R.id.LL_dialog_uhid);
 
         patient_name_txt.setFocusable(false);
         patient_id_txt.setFocusable(false);
@@ -141,19 +148,19 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void create(SwipeMenu menu) {
-                // create "open" item
+                    // create "open" item
 
-                SwipeMenuItem edit = new SwipeMenuItem(MainActivity.this);
-                //  openItem.setBackground(ContextCompat.getDrawable(context,R.drawable.noborder));
-                edit.setWidth(130);
-                edit.setIcon(R.drawable.ic_edit);
-                menu.addMenuItem(edit);
+                    SwipeMenuItem edit = new SwipeMenuItem(MainActivity.this);
+                    //  openItem.setBackground(ContextCompat.getDrawable(context,R.drawable.noborder));
+                    edit.setWidth(130);
+                    edit.setIcon(R.drawable.ic_edit);
+                    menu.addMenuItem(edit);
 
-                SwipeMenuItem openItem = new SwipeMenuItem(MainActivity.this);
-                //  openItem.setBackground(ContextCompat.getDrawable(context,R.drawable.noborder));
-                openItem.setWidth(130);
-                openItem.setIcon(R.drawable.ic_delete);
-                menu.addMenuItem(openItem);
+                    SwipeMenuItem openItem = new SwipeMenuItem(MainActivity.this);
+                    //  openItem.setBackground(ContextCompat.getDrawable(context,R.drawable.noborder));
+                    openItem.setWidth(130);
+                    openItem.setIcon(R.drawable.ic_delete);
+                    menu.addMenuItem(openItem);
                 
             }
         };
@@ -168,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                       //  Toast.makeText(MainActivity.this,currentListDataedit.get(position).getPatient_name(),Toast.LENGTH_SHORT).show();
                        // EditPopup(currentListDataedit.get(position));
                         break;
-
                 }
                 return true;
             }
@@ -197,28 +203,44 @@ public class MainActivity extends AppCompatActivity {
         save_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DOCTOR_NOTE = doctor_note_txt.getText().toString();
 
-                if(SCHEDULE_ID.equals("")){
-                    schedule_time_txt.setError("Select schedule time");
-                }
-                if(EMPLOYEE_ID.equals("")){
-                    doctor_name_txt.setError("Select doctor");
-                }
-                  if(!USER_CODE.equals("") && !BOOKING_ID.equals("") && !DOCTOR_NOTE.equals("") && !SCHEDULE_ID.equals("") && !SELECTED_DATE.equals("") && !EMPLOYEE_ID.equals("")){
-                      new AsyncUpdateBooking().execute();
-                  }
+                        AREA_NAME = area_name_txt.getText().toString();
+                        PATIENT_NAME = patient_name_txt.getText().toString();
+
+                        if(PATIENT_NAME.equals("")){
+                            patient_name_txt.setError("Select patient");
+                        }
+                        if(AREA_NAME.equals("")){
+                            area_name_txt.setError("Select area");
+                        }
+
+                        DOCTOR_NOTE = doctor_note_txt.getText().toString();
+
+                        if(SCHEDULE_ID.equals("")){
+                            schedule_time_txt.setError("Select schedule time");
+                        }
+                        if(EMPLOYEE_ID.equals("")){
+                            doctor_name_txt.setError("Select doctor");
+                        }
+                      if(!PATIENT_NAME.equals("") && !AREA_NAME.equals("") && !USER_CODE.equals("") && !BOOKING_ID.equals("") && !SCHEDULE_ID.equals("") && !SELECTED_DATE.equals("") && !EMPLOYEE_ID.equals("")){
+                          new AsyncUpdateBooking().execute();
+                      }
             }
         });
+
         date_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openDatePickerDialog(view);
+
+                //TO SELECT BOOKING LIST DATE
+                 openDatePickerDialog(view);
             }
         });
+
         booking_date_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TO SELECT BOOKING DATE
                 openDatePickerDialog_db(view);
             }
         });
@@ -242,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     Toast.makeText(context, "Please select booking date", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -273,10 +294,14 @@ public class MainActivity extends AppCompatActivity {
                 doctor_dialog.dismiss();
             }
         });
+              //TO GET BOOKING LIST
               new AsyncBookinglist().execute();
     }
 
     private void EditPopup(Bookinglist_Details details) {
+
+        Log.d("MAIN ACTIVITY ========(EDIT POPUP)=======>",details.toString());
+
         BOOKING_ID ="";
         SCHEDULE_ID="";
         DOCTOR_NOTE="";
@@ -289,11 +314,34 @@ public class MainActivity extends AppCompatActivity {
         schedule_time_txt.setText(String.valueOf(details.getSchedule_name()));
         doctor_note_txt.setText(String.valueOf(details.getDoctor_note()));
         doctor_name_txt.setText(String.valueOf(details.getEmployee_name()));
+        area_name_txt.setText(String.valueOf(details.getCity_name()));
+
+        booking_date_tv.setText(String.valueOf(DATE));
+        SELECTED_DATE = String.valueOf(details.getBooking_date());
 
         BOOKING_ID = details.getBooking_id();
         SCHEDULE_ID = details.getSchedule_id();
         DOCTOR_NOTE = details.getDoctor_note();
         EMPLOYEE_ID = details.getEmployee_id();
+
+        if(details.getBooking_type() != null) {
+
+            if (details.getBooking_type().equals("1")) {
+                if (LL_dialog_uhid.getVisibility() == View.GONE) {
+                    LL_dialog_uhid.setVisibility(View.VISIBLE);
+                }
+                patient_name_txt.setFocusable(false);
+                patient_id_txt.setFocusable(false);
+                area_name_txt.setFocusable(false);
+            }
+            if (details.getBooking_type().equals("2")) {
+                if (LL_dialog_uhid.getVisibility() == View.VISIBLE) {
+                    LL_dialog_uhid.setVisibility(View.GONE);
+                }
+                patient_name_txt.setFocusableInTouchMode(true);
+                area_name_txt.setFocusableInTouchMode(true);
+            }
+        }
     }
 
     public void SchedulePopup(){
@@ -342,12 +390,13 @@ public class MainActivity extends AppCompatActivity {
                                         json.getString("gender_name"),json.getString("city_id"),json.getString("city_name"),
                                         json.getString("user_id"), json.getString("schedule_id"), json.getString("doctor_note"),
                                         json.getString("created_date"),json.getString("booking_date"),json.getString("schedule_name"),
-                                        json.getString("employee_name"),json.getString("employee_id")));
+                                        json.getString("employee_name"),json.getString("employee_id"),json.getString("booking_type")));
                                 Log.d("MAIN ACTIVITY ACTIVITY ========(BookingList Array)====("+String.valueOf(i+1)+")====>", json.toString());
                             }
                         }
                     }
                 }
+
             }
             //Catch Block UserAuth true
             catch (Exception e) {
@@ -410,8 +459,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
+        try {
+            if (loader_dialog != null) {
+                loader_dialog.dismiss(); // try this
+            }
+            if (edit_dialog != null) {
+                edit_dialog.dismiss();
+            }
+            if (schedule_dialog != null) {
+                schedule_dialog.dismiss();
+            }
+            if (doctor_dialog != null) {
+                doctor_dialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onStop();
-        loader_dialog.dismiss(); // try this
     }
 
     //SECHEDULE LIST
@@ -447,6 +511,8 @@ public class MainActivity extends AppCompatActivity {
                             for(int i=0;i<jsonArray.length();i++){
                                 JSONObject json = jsonArray.getJSONObject(i);
                                 schedule_details.add(new Schedule_Details(json.getString("schedule_name"),json.getString("schedule_id"),json.getString("active_status"),json.getString("count")));
+
+                                Log.d("MAIN ACTIVITY ============>",json.toString());
                             }
                         }
                     }
@@ -584,7 +650,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //GET SAVE BOOKING
+    //GET UPDATED BOOKING
     public class AsyncUpdateBooking extends
             AsyncTask<String, JSONObject,Boolean> {
         JSONObject jsonObj, jsonObj_body,jsonObj_userinfo;
@@ -601,12 +667,11 @@ public class MainActivity extends AppCompatActivity {
                 RestAPI objRestAPI = new RestAPI();
                 if (isNetworkAvailable()) {
                     //jsonObj = objRestAPI.GetUpdateBooking("2","2","TEST 111", "2","2022-11-22","6");
-                    jsonObj = objRestAPI.GetUpdateBooking(USER_CODE,SCHEDULE_ID,DOCTOR_NOTE, BOOKING_ID,SELECTED_DATE,EMPLOYEE_ID);
-                    Log.d("MAIN ACTIVITY ======(JSON PARAMS)======>"," USER_CODE : "+USER_CODE+" SCHEDULE_ID : "+SCHEDULE_ID+" DOCTOR_NOTE : "+DOCTOR_NOTE+" BOOKING_ID : "+BOOKING_ID+" SELECTED_DATE : "+SELECTED_DATE+" EMPLOYEE_ID : "+EMPLOYEE_ID);
+                    jsonObj = objRestAPI.GetUpdateBooking(USER_CODE,SCHEDULE_ID,DOCTOR_NOTE, BOOKING_ID,SELECTED_DATE,EMPLOYEE_ID,AREA_NAME,PATIENT_NAME);
+                    Log.d("MAIN ACTIVITY ======(JSON PARAMS)======>"," USER_CODE : "+USER_CODE+" SCHEDULE_ID : "+SCHEDULE_ID+" DOCTOR_NOTE : "+DOCTOR_NOTE+" BOOKING_ID : "+BOOKING_ID+" SELECTED_DATE : "+SELECTED_DATE+" EMPLOYEE_ID : "+EMPLOYEE_ID+" AREA NAME : "+AREA_NAME+" PATIENT NAME : "+PATIENT_NAME);
                     message = "";
 
                     if(jsonObj!=null) {
-
                         message = new JSONObject(jsonObj.getString("body")).getString("message");
                     }
 
@@ -614,8 +679,8 @@ public class MainActivity extends AppCompatActivity {
             }
             //Catch Block UserAuth true
             catch (Exception e) {
-                Log.d("AsyncLoggerService", "Message");
-                Log.d("AsyncLoggerService", e.getMessage());
+                Log.d("AsyncUpdateLoggerService", "Message");
+                Log.d("AsyncUpdateLoggerService", e.getMessage());
             }
             return true;
         }
@@ -623,28 +688,32 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
             //Toast.makeText(context, String.valueOf(final_flag) +""+getdeviceid, Toast.LENGTH_SHORT).show();
 
-            if(message.equals("success")) {
-                patient_name_txt.setText("");
-                patient_id_txt.setText("");
-                schedule_time_txt.setText("");
-                doctor_note_txt.setText("");
-                booking_date_tv.setText("");
-                doctor_name_txt.setText("");
+            try {
 
-                Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show();
-                if(edit_dialog != null) {
-                    edit_dialog.dismiss();
+                if (message.equals("success")) {
+                    patient_name_txt.setText("");
+                    patient_id_txt.setText("");
+                    schedule_time_txt.setText("");
+                    doctor_note_txt.setText("");
+                    booking_date_tv.setText("");
+                    doctor_name_txt.setText("");
+
+                    Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                    if (edit_dialog != null) {
+                        edit_dialog.dismiss();
+                    }
+                    Get_List();
                 }
-                Get_List();
-            }
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -703,6 +772,9 @@ public class MainActivity extends AppCompatActivity {
                     mHolder.cityname_tv = (TextView) convertView.findViewById(R.id.cityname_tv);
                     mHolder.uhid_tv = (TextView) convertView.findViewById(R.id.uhid_tv);
                     mHolder.scheduletime_tv  = (TextView) convertView.findViewById(R.id.schedule_time_tv);
+                    mHolder.note_tv  = (TextView) convertView.findViewById(R.id.note_tv);
+
+                    mHolder.LL_uhid = (LinearLayout) convertView.findViewById(R.id.LL_uhid);
 
                 } catch (Exception e) {
                     Log.i("Route ===============>", e.toString());
@@ -715,14 +787,30 @@ public class MainActivity extends AppCompatActivity {
             mHolder.patient_name_tv.setText(String.valueOf(bookinglist.get(position).getPatient_name()));
             mHolder.doctorname_tv.setText(String.valueOf(bookinglist.get(position).getEmployee_name()));
             mHolder.cityname_tv.setText(String.valueOf(bookinglist.get(position).getCity_name()));
+
+            if(!bookinglist.get(position).getBooking_type().equals(null)) {
+
+                if (bookinglist.get(position).getBooking_type().equals("1")) {
+                    if (mHolder.LL_uhid.getVisibility() == View.GONE) {
+                        mHolder.LL_uhid.setVisibility(View.VISIBLE);
+                    }
+                }
+                if (bookinglist.get(position).getBooking_type().equals("2")) {
+                    if (mHolder.LL_uhid.getVisibility() == View.VISIBLE) {
+                        mHolder.LL_uhid.setVisibility(View.GONE);
+                    }
+                }
+            }
             mHolder.uhid_tv.setText(String.valueOf(bookinglist.get(position).getUhid()));
             mHolder.scheduletime_tv.setText(String.valueOf(bookinglist.get(position).getSchedule_name()));
+
+            mHolder.note_tv.setText(String.valueOf(bookinglist.get(position).getDoctor_note()));
             //convertView.setBackgroundResource(R.drawable.custom_borberless_ripple);
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
+                    //                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
 //                        builder.setMessage("Do you want to edit booking ?")
 //                                .setCancelable(false)
 //                                //.setIcon(R.mipmap.admin)
@@ -739,15 +827,12 @@ public class MainActivity extends AppCompatActivity {
 //                        AlertDialog alert = builder.create();
 //                        alert.show();
                     EditPopup(bookinglist.get(position));
-
                 }
             });
             return convertView;
 
         }
-
     }
-
 
     public class DoctorListAdapter extends BaseAdapter {
         LayoutInflater inflater;
@@ -824,7 +909,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
     public class ScheduleListAdapter extends BaseAdapter {
         LayoutInflater inflater;
@@ -918,9 +1002,10 @@ public class MainActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+
     private class ViewHolder {
-        TextView doctorname_tv,uhid_tv,scheduletime_tv,patient_name_tv,cityname_tv;
-        LinearLayout listLL;
+        TextView doctorname_tv,uhid_tv,scheduletime_tv,patient_name_tv,cityname_tv,note_tv;
+        LinearLayout listLL,LL_uhid;
         CardView card_view;
         TextView doctor_name_tv,appointment_count_tv,schedule_tv,remarks,gender_tv,areaname_tv,mobileno_tv;
     }
@@ -989,7 +1074,8 @@ public class MainActivity extends AppCompatActivity {
                     DATE = selectedDate;
 
                     Get_List();
-                    Log.d("MAIN ACITIVITY ======(SELECTED DATE )======>",DATE);
+
+                    Log.d("MAIN ACTIVITY ======(SELECTED DATE )======>",DATE);
                 }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
         // datePickerDialog.getDatePicker().setMinDate(cal1.getTimeInMillis());
@@ -1005,7 +1091,6 @@ public class MainActivity extends AppCompatActivity {
         cal1.add(Calendar.DAY_OF_YEAR, -10);
         // Date mindate = s.format(new Date(cal1.getTimeInMillis()));
 
-
         // Get Current Date
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 (view, year, monthOfYear, dayOfMonth) -> {
@@ -1014,7 +1099,8 @@ public class MainActivity extends AppCompatActivity {
                     String selectedDate_db =String.format("%d-%02d-%02d", year,(monthOfYear + 1), dayOfMonth);
                     booking_date_tv.setText(String.valueOf(selectedDate));
                     SELECTED_DATE = selectedDate_db;
-                    Log.d("MAIN ACITIVITY ======(SELECTED DATE )======>",SELECTED_DATE);
+                    Log.d("MAIN ACTIVITY ======(SELECTED DATE )======>",SELECTED_DATE);
+                    Log.i("TEST","0");
                 }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
          datePickerDialog.getDatePicker().setMinDate(cal.getTimeInMillis());
@@ -1023,6 +1109,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void Get_List() {
+        //TO GET BOOKING LIST
         new AsyncBookinglist().execute();
     }
 
